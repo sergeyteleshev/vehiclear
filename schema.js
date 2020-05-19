@@ -11,6 +11,14 @@ const {
     GraphQLSchema
 } = require('graphql');
 
+const Cars = new graphql.GraphQLObjectType({
+    name: 'Cars',
+    fields: () => ({
+        id: { type: graphql.GraphQLString },
+        car_name: { type: graphql.GraphQLString },
+        car_age: { type: graphql.GraphQLInt },
+    })
+});
 // Launch Type
 const LaunchType = new GraphQLObjectType({
     name: 'Launch',
