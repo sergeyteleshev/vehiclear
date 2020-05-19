@@ -7,7 +7,7 @@ export class Register extends Component {
         return <div className={"register-page"}>
             <div className={"register-logo"}>
                 <span className={"register-logo__span"}>VEHICLEAR!</span>
-                <div className={"logo__svg"}></div>
+                <div className={"logo__svg_black"}></div>
             </div>
             <div className={"register-form"}>
                 <input type={"text"} placeholder={"register"}/>
@@ -19,7 +19,7 @@ export class Register extends Component {
                 </div>
             </div>
             <div className={"register-tips"}>
-                Мы поможем вам освободить ваше парковочное место
+                Мы поможем вам освободить парковочное место
             </div>
         </div>
     }

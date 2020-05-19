@@ -93,6 +93,25 @@ select {
 
 .logo__svg
 {
+  background-image: url('img/logo.svg');
+}
+
+.logo__svg_black
+{
+  background-image: url('img/logo_black.svg');
+}
+
+.logo__svg_black, .logo__svg
+{
+  position: absolute;
+  background-size: contain;
+  width: 100px;
+  height: 100px;
+  -webkit-animation:spin 6s linear infinite;
+  -moz-animation:spin 6s linear infinite;
+  animation:spin 6s linear infinite;
+}
+{
   position: absolute;
   background-image: url('img/logo.svg');
   background-size: contain;
@@ -169,7 +188,7 @@ select {
   letter-spacing: 0.12em;
   font-size: 24px;
   margin-top: 97px;
-  margin-bottom: 98px;
+  margin-bottom: 140px;
 }
 
 .main-content
@@ -185,7 +204,6 @@ select {
 .main-content__overflow-layout
 {
   width: 100%;
-  padding-top: -40px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -206,6 +224,7 @@ select {
 
 .main-content__slider
 {
+  margin-top: -50px;
   font-family: 'Roboto', serif;
   box-shadow: 0px 15px 20px rgba(144, 152, 177, 0.25);
   width: 100%;
@@ -319,7 +338,7 @@ select {
 .content__slider__buttons__gallery::before
 {
   background-image: url("./img/gallery.svg");
-  fill: green;
+  fill: #53D1B6;
 }
 
 .camera-icon, .gallery-icon
@@ -383,6 +402,7 @@ select {
 
 .login-form input[type="text"], .login-form input[type="password"]
 {
+  font-size: 14px;
   width: 100%;
   padding: 6px 20px;
   border-radius: 13px;
@@ -407,7 +427,7 @@ select {
 {
   border: none;
   font-family: 'Roboto', serif;
-  padding: 6px 80px;
+  padding: 6px 65px;
   color: white;
   background: #FF473A;
   border-radius: 15px;
@@ -415,7 +435,7 @@ select {
 
 .login-form input[type="submit"]:hover
 {
-  background: #00973A;
+  background: #53D1B6;
 }
 
 .login-form a
@@ -450,6 +470,8 @@ select {
 
 .register-tips
 {
+  font-weight: bold;
+  color: black;
   margin-top: 40px;
   font-size: 15px;
   font-family: 'Roboto', serif;
@@ -481,10 +503,11 @@ select {
 
 .register-form input[type="text"], .register-form input[type="password"]
 {
+  font-size: 14px;
   width: 100%;
   padding: 6px 20px;
   border-radius: 13px;
-  border: 2px solid black;
+  border: 1px solid black;
 }
 
 .register-page
@@ -505,7 +528,7 @@ select {
 {
   border: none;
   font-family: 'Roboto', serif;
-  padding: 6px 40px;
+  padding: 6px 15px;
   color: white;
   background: #FF473A;
   border-radius: 15px;

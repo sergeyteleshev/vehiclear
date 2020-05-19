@@ -18,7 +18,7 @@ export class Login extends Component {
                 </div>
             </div>
             <div className={"login-tips"}>
-                Мы поможем вам освободить ваше парковочное место
+                Мы поможем вам освободить парковочное место
             </div>
         </div>
     }
