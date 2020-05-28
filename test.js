@@ -1,6 +1,6 @@
 const { db}  = require("./config");
 
-db.query('select * from cars', function(err, rows){
+db.query('select * from user', function(err, rows){
 if(err) {
     throw err;
 } else {
