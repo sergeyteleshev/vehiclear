@@ -18,15 +18,17 @@ var user = db.define('user', {
     },
     login: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        primaryKey:true,
+        unique: true
     },
     FIO: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     point: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     password: {
         type: Sequelize.STRING,
@@ -38,17 +40,6 @@ var user = db.define('user', {
     }
 });
 
-user.sync({force: true}).then(function () {
-    // Table created
-    return user.create({
-        id: 1,
-        login: "Tommy",
-        FIO:"TOMMYHILFIGER",
-        point: "nevsky",
-        password:"123init",
-        role: "admin"
-    });
-});
 // const connection=mysql.createConnection({
 //     host:'localhost',
 //     user: 'root',

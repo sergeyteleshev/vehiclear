@@ -2,6 +2,7 @@ const graphql = require("graphql");
 var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt } = graphql;
 const { User } = require("./types");
+const bcrypt = require('bcryptjs');
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
@@ -14,13 +15,15 @@ const RootMutation = new GraphQLObjectType({
                 FIO: { type: GraphQLString },
                 login: { type: GraphQLString },
                 password: { type: GraphQLString },
-                point: { type: GraphQLString },
+                point: { type: GraphQLString }
             },
-            resolve (root, args) {
+            async resolve(root, args) {
+                args.password = await bcrypt.hash(args.password, 10);
                 return db.models.user.create(args);
             }
         }
     }
 });
+
 
 exports.mutation = RootMutation;
