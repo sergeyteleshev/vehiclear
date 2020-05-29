@@ -4,6 +4,7 @@ const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt }
 const { User } = require("./types");
 const bcrypt = require('bcryptjs');
 
+
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
     type: "Mutation",
