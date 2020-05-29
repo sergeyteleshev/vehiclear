@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt } = graphql;
-const { User } = require("./types");
+const { User, Car } = require("./types");
 const bcrypt = require('bcryptjs');
 
 
@@ -22,8 +22,10 @@ const RootMutation = new GraphQLObjectType({
                 args.password = await bcrypt.hash(args.password, 10);
                 return db.models.user.create(args);
             }
-        }
-    }
+        },
+        // addCar:
+        // type: Car,
+}
 });
 
 

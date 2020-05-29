@@ -92,7 +92,7 @@ var photo = db.define('photo', {
         autoIncrement: true
     },
     photo: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
         allowNull: true
     },
     date: {
@@ -110,17 +110,17 @@ var photo = db.define('photo', {
 
 });
 
-// photo.sync({force: true}).then(function () {
-//     // Table created
-//     return photo.create({
-//         id:7,
-//         photo:"",
-//         date: Date("25.05.2020"),
-//         car_id: 1
-//
-//     });
-// });
-//
+photo.sync({force: true}).then(function () {
+    // Table created
+    return photo.create({
+        id:7,
+        photo:"",
+        date: Date("25.05.2020"),
+        car_id: 1
+
+    });
+});
+
 // car.hasMany(photo);
 
 module.exports = db;

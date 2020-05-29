@@ -1,5 +1,5 @@
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLString ,GraphQLInt} = graphql;
+const { GraphQLObjectType, GraphQLString ,GraphQLInt ,GraphQLBoolean,Gr} = graphql;
 
 var User = new GraphQLObjectType({
         name: 'user',
@@ -41,15 +41,78 @@ var User = new GraphQLObjectType({
     }
 );
 
-const CarsType = new GraphQLObjectType({
-    name: "Cars",
-    type: "Query",
-    fields: {
-        car_id: { type: GraphQLInt },
-        car_name: { type: GraphQLString },
-        car_age: { type: GraphQLInt }
+var Car = new GraphQLObjectType({
+        name: 'car',
+        description: 'list of all the cars',
+        fields: () => {
+            return {
+                id: {
+                    type: GraphQLInt,
+                    resolve (car) {
+                        return car.id;
+                    }
+                },
+                gos_numb: {
+                    type: GraphQLString,
+                    resolve(car) {
+                        return car.gos_numb;
+                    }
+                },
+                location: {
+                    type: GraphQLString,
+                    resolve(car) {
+                        return car.location;
+                    }
+                },
+                state: {
+                    type: GraphQLBoolean,
+                    resolve(car) {
+                        return car.state;
+                    }
+                },
+                reports_counter: {
+                    type: GraphQLInt,
+                    resolve(car) {
+                        return car.reports_counter;
+                    }
+                }
+            }
+        }
     }
-});
+);
 
+var Photo = new GraphQLObjectType({
+        name: 'photo',
+        description: 'list of all the cars',
+        fields: () => {
+            return {
+                id: {
+                    type: GraphQLInt,
+                    resolve (photo) {
+                        return photo.id;
+                    }
+                },
+                photo: {
+                    type: GraphQLString,
+                    resolve(photo) {
+                        return photo.photo;
+                    }
+                },
+                date: {
+                    type: GraphQLString,
+                    resolve(photo) {
+                        return photo.date;
+                    }
+                },
+                car_id: {
+                    type: GraphQLInt,
+                    resolve(photo) {
+                        return photo.car_id;
+                    }
+                }
+            }
+        }
+    }
+);
 exports.User = User;
-exports.CarsType = CarsType;
+exports.Car = Car;
