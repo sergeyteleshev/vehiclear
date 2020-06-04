@@ -68,6 +68,10 @@ var car = db.define('car', {
     reports_counter: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    photo: {
+        type: Sequelize.STRING,
+        allowNull: true
     }
 });
 
@@ -75,15 +79,29 @@ var car = db.define('car', {
 // car.sync({force: true}).then(function () {
 //     // Table created
 //     return car.create({
-//         id:1,
+//         id:5,
 //         gos_numb: "455TU47",
 //         location: "123141241",
 //         state: true,
-//         reports_counter:1
+//         reports_counter:1,
+//         photo:"qweqweq"
+//
+//     }
+//     );
+// });
+// user.sync({force: true}).then(function () {
+//     // Table created
+//     return user.create({
+//         id:3,
+//         login:"test1",
+//         FIO:"test IV IV",
+//         role: "A",
+//         point: "ST PETERSB",
+//         password:"qwwe",
+//         city:"SPB"
 //
 //     });
 // });
-
 var photo = db.define('photo', {
     id: {
         type: Sequelize.INTEGER,
@@ -110,17 +128,17 @@ var photo = db.define('photo', {
 
 });
 
-photo.sync({force: true}).then(function () {
-    // Table created
-    return photo.create({
-        id:7,
-        photo:"",
-        date: Date("25.05.2020"),
-        car_id: 1
+// photo.sync({force: true}).then(function () {
+//     // Table created
+//     return photo.create({
+//         id:7,
+//         photo:"",
+//         date: Date("25.05.2020"),
+//         car_id: 2
+//
+//     });
+// });
 
-    });
-});
-
-// car.hasMany(photo);
+car.hasMany(photo);
 
 module.exports = db;

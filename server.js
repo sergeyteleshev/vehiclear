@@ -7,6 +7,7 @@ const { query } = require("./schema/query");
 const { mutation } = require("./schema/mutation");
 var session = require('express-session');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const schema = new GraphQLSchema({
     query,
@@ -17,6 +18,7 @@ var app = express();
 
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.use(
     '/main',

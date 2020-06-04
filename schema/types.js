@@ -40,6 +40,39 @@ var User = new GraphQLObjectType({
         }
     }
 );
+var Photo = new GraphQLObjectType({
+        name: 'photo',
+        description: 'list of all the cars',
+        fields: () => {
+            return {
+                id: {
+                    type: GraphQLInt,
+                    resolve (photo) {
+                        return photo.id;
+                    }
+                },
+                photo: {
+                    type: GraphQLString,
+                    resolve(photo) {
+                        return photo.photo;
+                    }
+                },
+                date: {
+                    type: GraphQLString,
+                    resolve(photo) {
+                        return photo.date;
+                    }
+                },
+                car_id: {
+                    type: GraphQLInt,
+                    resolve(photo) {
+                        return photo.car_id;
+                    }
+                }
+            }
+        }
+    }
+);
 
 var Car = new GraphQLObjectType({
         name: 'car',
@@ -74,45 +107,19 @@ var Car = new GraphQLObjectType({
                     type: GraphQLInt,
                     resolve(car) {
                         return car.reports_counter;
-                    }
-                }
+                    }},
+                    photo: {
+                        type: GraphQLString,
+                        resolve(car) {
+                            return car.photo;
+                        }
+                    },
             }
         }
     }
 );
 
-var Photo = new GraphQLObjectType({
-        name: 'photo',
-        description: 'list of all the cars',
-        fields: () => {
-            return {
-                id: {
-                    type: GraphQLInt,
-                    resolve (photo) {
-                        return photo.id;
-                    }
-                },
-                photo: {
-                    type: GraphQLString,
-                    resolve(photo) {
-                        return photo.photo;
-                    }
-                },
-                date: {
-                    type: GraphQLString,
-                    resolve(photo) {
-                        return photo.date;
-                    }
-                },
-                car_id: {
-                    type: GraphQLInt,
-                    resolve(photo) {
-                        return photo.car_id;
-                    }
-                }
-            }
-        }
-    }
-);
+
 exports.User = User;
 exports.Car = Car;
+exports.Photo = Photo;
