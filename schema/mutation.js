@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 var db = require("../config");
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt } = graphql;
-const { User, Car } = require("./types");
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt,GraphQLList } = graphql;
+const { User, Car,PhotoInput,Photo } = require("./types");
 const bcrypt = require('bcryptjs');
 
 
@@ -23,8 +23,34 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.user.create(args);
             }
         },
-        // addCar:
-        // type: Car,
+        addCar: {
+            type: Car,
+            args:{
+                id:{type: GraphQLInt},
+                gos_numb: { type: GraphQLString },
+                location: { type: GraphQLString },
+                state:{type: GraphQLBoolean},
+                reports_counter:{type: GraphQLInt},
+                //photoIn:{type: new GraphQLList(PhotoInput)}
+            },
+            async resolve(root, args) {
+                return db.models.car.create(args);
+            }
+        },
+
+        addPhoto: {
+            type: Photo,
+            args:{
+                id:{type: GraphQLInt},
+                photo: { type: GraphQLString },
+                date: { type: GraphQLString },
+                photo:{type: GraphQLString },
+                car_id:{type: GraphQLInt}
+            },
+            async resolve(root, args) {
+                return db.models.photo.create(args);
+            }
+        },
 }
 });
 

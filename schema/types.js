@@ -46,20 +46,36 @@ var PhotoInput = new GraphQLInputObjectType({
         description: 'list of all the cars',
         fields: () => ({
 
+            id: {
+                type: GraphQLInt,
+                // resolve (photo) {
+                //     return photo.id;
+                // }
+            },
+            photo: {
+                type: GraphQLString,
+                // resolve(photo) {
+                //     return photo.photo;
+                // }
+            },
+            date: {
+                type: GraphQLString,
+                // resolve(photo) {
+                //     return photo.date;
+                // }
+            },
+            car_id: {
+                type: GraphQLInt,
+                // resolve(photo) {
+                //     return photo.car_id;
+                // }
+            },
+        }),
 
-                car_id: {
-                    type: GraphQLInt,
-                    // resolve(photo) {
-                    //     return photo.car_id;
-                    // }
-
-            }
-        })
     }
 );
 const Photo = new GraphQLObjectType({
         name: 'photo',
-
         description: 'list of all the cars',
         fields: () => ({
 
@@ -132,10 +148,7 @@ const Car = new GraphQLObjectType({
                     }},
                     photo: {
                         type: GraphQLList(Photo),
-
                         resolve(car) {
-                      // return photo.photo;
-
                            return db.models.photo.findAll({raw:true,where: {car_id:car.id}});
                            //(photoCar);
                            //return photoCar.photo;
