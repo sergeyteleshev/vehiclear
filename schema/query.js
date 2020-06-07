@@ -1,7 +1,6 @@
 var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString,GraphQLList,GraphQLInt } = require("graphql");
-const { User, Car, Photo } = require("./types");
-
+const { User, Car, Photo,PhotoInput } = require("./types");
 
 
 var Query = new GraphQLObjectType({
@@ -43,23 +42,19 @@ var Query = new GraphQLObjectType({
                 args: {
                     id: {
                         type: GraphQLInt
-                    },
-                    gos_numb: {
-                        type: GraphQLString
-                    },
-                    location: {
-                        type: GraphQLString
-                    },
-                    state: {
-                        type: GraphQLString
-                    },
-                    reports_counter: {
-                        type: GraphQLString
-                    },
-                    photo: {
-                        type: GraphQLString,
-                    },
+                    }
                 },
+                // where: (cars, args, context) => {
+                //     if (args.id) return `${carsTable}.id = ${args.id}`
+                // },
+                // resolve: (parent, args, context, resolveInfo) => {
+                //     // resolve the user and the comments and any other descendants in a single request and return the data!
+                //     // all you need to pass is the `resolveInfo` and a callback for querying the database
+                //     return joinMonster.default(resolveInfo, {}, sql => {
+                //         // knex is a query library for SQL databases
+                //         return knex.raw(sql)
+                //     })
+
                 resolve (root, args) {
                     return db.models.car.findAll({ where: args });
                 }

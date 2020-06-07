@@ -119,11 +119,7 @@ var photo = db.define('photo', {
     },
     car_id:{
         type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'cars',
-            key: 'id'
-        }
+        allowNull: true
     }
 
 });
@@ -139,6 +135,6 @@ var photo = db.define('photo', {
 //     });
 // });
 
-car.hasMany(photo);
+//car.hasMany(photo);
 
 module.exports = db;

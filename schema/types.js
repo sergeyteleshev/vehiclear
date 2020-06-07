@@ -1,5 +1,6 @@
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLString ,GraphQLInt ,GraphQLBoolean,Gr} = graphql;
+const { GraphQLObjectType, GraphQLString ,GraphQLInt ,GraphQLBoolean,GraphQLInputObjectType,GraphQLList} = graphql;
+var db = require("../config");
 
 var User = new GraphQLObjectType({
         name: 'user',
@@ -40,11 +41,28 @@ var User = new GraphQLObjectType({
         }
     }
 );
-var Photo = new GraphQLObjectType({
-        name: 'photo',
+var PhotoInput = new GraphQLInputObjectType({
+        name: 'photoinput',
         description: 'list of all the cars',
-        fields: () => {
-            return {
+        fields: () => ({
+
+
+                car_id: {
+                    type: GraphQLInt,
+                    // resolve(photo) {
+                    //     return photo.car_id;
+                    // }
+
+            }
+        })
+    }
+);
+const Photo = new GraphQLObjectType({
+        name: 'photo',
+
+        description: 'list of all the cars',
+        fields: () => ({
+
                 id: {
                     type: GraphQLInt,
                     resolve (photo) {
@@ -65,22 +83,26 @@ var Photo = new GraphQLObjectType({
                 },
                 car_id: {
                     type: GraphQLInt,
-                    resolve(photo) {
+                     resolve(photo) {
                         return photo.car_id;
                     }
                 }
-            }
-        }
+
+        })
     }
 );
+Photo._typeConfig = {
+    sqlTable: 'photos',
+    uniqueKey: 'id'
+};
 
-var Car = new GraphQLObjectType({
+const Car = new GraphQLObjectType({
         name: 'car',
         description: 'list of all the cars',
-        fields: () => {
-            return {
+        fields: () => ({
                 id: {
                     type: GraphQLInt,
+                    sqlColumn:'id',
                     resolve (car) {
                         return car.id;
                     }
@@ -109,17 +131,29 @@ var Car = new GraphQLObjectType({
                         return car.reports_counter;
                     }},
                     photo: {
-                        type: GraphQLString,
+                        type: GraphQLList(Photo),
+
                         resolve(car) {
-                            return car.photo;
+                      // return photo.photo;
+
+                           return db.models.photo.findAll({raw:true,where: {car_id:car.id}});
+                           //(photoCar);
+                           //return photoCar.photo;
+                           //return db.models.photo.findOne({attraw:true,where: {car_id:car.id}});
                         }
-                    },
-            }
+                        //sqlJoin: (carsTable, photosTable, args) => `${carsTable}.id = ${photosTable}.cars_id`
+
         }
+        })
     }
 );
 
+Car._typeConfig = {
+    sqlTable: 'cars',
+    uniqueKey: 'id'
+};
 
 exports.User = User;
 exports.Car = Car;
 exports.Photo = Photo;
+exports.PhotoInput = PhotoInput;
