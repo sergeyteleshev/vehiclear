@@ -48,8 +48,6 @@ var Query = new GraphQLObjectType({
                 //     if (args.id) return `${carsTable}.id = ${args.id}`
                 // },
                 // resolve: (parent, args, context, resolveInfo) => {
-                //     // resolve the user and the comments and any other descendants in a single request and return the data!
-                //     // all you need to pass is the `resolveInfo` and a callback for querying the database
                 //     return joinMonster.default(resolveInfo, {}, sql => {
                 //         // knex is a query library for SQL databases
                 //         return knex.raw(sql)

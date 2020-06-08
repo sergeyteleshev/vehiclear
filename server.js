@@ -5,7 +5,6 @@ const expressGraphQl = require("express-graphql");
 const { GraphQLSchema } = graphql;
 const { query } = require("./schema/query");
 const { mutation } = require("./schema/mutation");
-var session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -25,7 +24,6 @@ app.use(
     expressGraphQl({
         schema: schema,
         graphiql: true
-        //rootValue: { session: request.session },
     })
 );
 const PORT = process.env.PORT || 5000;
