@@ -1,18 +1,7 @@
 import React, {Component, Fragment} from "react";
 import {gql} from 'apollo-boost';
 import {Query} from 'react-apollo';
-import LaunchItem from './LaunchItem';
 import Container from "react-bootstrap/Container";
-const INTRO_QUERY = gql`
-    query LaunchesQuery {
-        launches {
-            flight_number
-            mission_name
-            launch_date_local
-            launch_success
-        }
-    }
-`;
 
 export class IntroLoader extends Component {
     render() {

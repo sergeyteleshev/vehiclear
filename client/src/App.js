@@ -11,7 +11,7 @@ import IntroLoader from "./components/IntroLoader";
 import Register from "./components/Register";
 
 const client = new ApolloClient({
-    uri: 'http://localhost:5000/graphql'
+    uri: 'http://localhost:5000/main'
 });
 
 function App() {
