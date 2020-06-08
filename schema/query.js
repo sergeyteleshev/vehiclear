@@ -37,6 +37,22 @@ var Query = new GraphQLObjectType({
                     return db.models.user.findAll({ where: args });
                 }
             },
+            User: {
+                type: User,
+                args: {
+                    id: {
+                        type: GraphQLInt
+                    },
+                    login: {
+                        type: GraphQLString
+                    }
+                },
+                resolve(parent, args)
+                {
+                    if(args.id) return db.models.user.findByPk(args.id);
+                    if(args.login) return db.models.user.findOne({where: args});
+                }
+            },
             Cars:{
                 type: new GraphQLList(Car),
                 args: {
@@ -55,6 +71,22 @@ var Query = new GraphQLObjectType({
 
                 resolve (root, args) {
                     return db.models.car.findAll({ where: args });
+                }
+            },
+            Car: {
+                type: Car,
+                args: {
+                    id: {
+                        type: GraphQLInt
+                    },
+                    gos_numb: {
+                        type: GraphQLString
+                    }
+                },
+                resolve(parent, args)
+                {
+                    if(args.id) return db.models.car.findByPk(args.id);
+                    if(args.gos_numb) return db.models.car.findOne({where: args});
                 }
             },
             Photos:{
