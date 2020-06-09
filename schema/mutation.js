@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const validator=require('validator');
 const {ValidationError} =require( "./ValidationError");
 
+//todo: запилить функцию, чтобы не писать полотно кода
 // async function throwError(args,table) {
 //     let errors = [];
 //     var field = args.split(".")[1];
@@ -34,7 +35,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(root, args) {
                 //const userTable=db.models.user;
                 let errors = [];
-                if (args.login === undefined) {
+                if (args.login == null) {
                     errors.push({key: 'login', message: 'The login must not be empty.'});
                 }
                 //await throwError("args.password",userTable);
