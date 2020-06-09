@@ -11,28 +11,64 @@ export class Register extends Component {
             login: "",
             password: "",
             passwordAgain: "",
-            incorrectData: false,
+            isRegistered: false,
             FIO: "",
+            isResponseMessageShowing: false,
+            responseMessage: "",
+            isError: false,
         };
     }
 
-    register(login, password)
-    {
-        const bcrypt = require('bcryptjs');
-
-        if(login.length > 0 && password.length > 0)
+    async register(login, password, passwordAgain, FIO) {
+        if(login.length > 0 && password.length > 0 && passwordAgain.length > 0 && password === passwordAgain)
         {
-            this.props.addUserMutation({
+            const response = await this.props.addUserMutation({
                 variables: {
-                    login: this.state.login,
-                    password: bcrypt.hash(this.state.password, 10),
+                    login,
+                    password,
+                    FIO,
                 }
+            });
+
+            console.log(response);
+
+            if(response.data !== null)
+            {
+                this.setState({isRegistered: true});
+            }
+            else
+            {
+                this.setState({
+                    isResponseMessageShowing: false,
+                    isError: false,
+                    responseMessage: "",
+                    isRegistered: true,
+                });
+            }
+        }
+        else if(password !== passwordAgain)
+        {
+            this.setState({
+                isResponseMessageShowing: true,
+                isError: true,
+                responseMessage: "Несовпадают пароли!",
+            });
+        }
+        else
+        {
+            this.setState({
+                isResponseMessageShowing: true,
+                isError: true,
+                responseMessage: "Заполните все поля!",
             });
         }
     }
 
     render() {
-        const {login, password, passwordAgain, FIO} = this.state;
+        const {login, password, passwordAgain, FIO, isResponseMessageShowing,
+            responseMessage, isError} = this.state;
+
+        const responseMessageDiv = isError ? <div className={"register-response-message message-error"}>{responseMessage}</div>: "";
 
         return <div className={"register-page"}>
             <div className={"register-logo"}>
@@ -45,10 +81,11 @@ export class Register extends Component {
                 <input value={password} onChange={e => this.setState({password: e.target.value})} type={"password"} placeholder={"password"}/>
                 <input value={passwordAgain} onChange={e => this.setState({passwordAgain: e.target.value})} type={"password"} placeholder={"password again"}/>
                 <div className={"register-action"}>
-                    <input onClick={() => this.register(login, password)} type={"submit"} value={"Зарегистрироваться"}/>
+                    <input onClick={() => this.register(login, password, passwordAgain, FIO)} type={"submit"} value={"Зарегистрироваться"}/>
                     <Link to={LoginURL}>Есть аккаунт?</Link>
                 </div>
             </div>
+            {isResponseMessageShowing ? responseMessageDiv : ""}
             <div className={"register-tips"}>
                 Мы поможем вам освободить парковочное место
             </div>

@@ -1,6 +1,4 @@
-import React, {Component, Fragment} from "react";
-import {gql} from 'apollo-boost';
-import {Query} from 'react-apollo';
+import React, {Component} from "react";
 import Container from "react-bootstrap/Container";
 
 export class IntroLoader extends Component {

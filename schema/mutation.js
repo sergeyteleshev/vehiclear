@@ -3,12 +3,14 @@ var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt,GraphQLList } = graphql;
 const { User, Car,PhotoInput,Photo } = require("./types");
 const bcrypt = require('bcryptjs');
-
+//todo чёто не работает этот импорт
+// import ValidationError from 'ValidationError';
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
     type: "Mutation",
     fields: {
+        //todo обработать все поля в resolve из args
         addUser: {
             type: User,
             args: {
@@ -19,10 +21,20 @@ const RootMutation = new GraphQLObjectType({
                 point: { type: GraphQLString }
             },
             async resolve(root, args) {
+                // let errors = [];
+                // const foundUser = db.models.user.findOne({attributes:['login'], where:{login:args.login}});
+                //
+                // if (args.login === foundUser.login)
+                //     errors.push({ key: 'login', message: 'This login is used by other user. Make a new one' });
+                //
+                // if(errors.length)
+                //     new ValidationError(errors);
+
                 args.password = await bcrypt.hash(args.password, 10);
                 return db.models.user.create(args);
             }
         },
+        //todo обработать все поля в resolve из args
         updateUser: {
             type: User,
             args: {
@@ -35,9 +47,9 @@ const RootMutation = new GraphQLObjectType({
             resolve (user,args){
             const userEdit=db.models.user.findOne({attributes:['id'], where:{id:args.id}});
             return db.models.user.update(args,{where:{id:args.id}});
-
         }
         },
+        //todo обработать все поля в resolve из args
         deleteUser: {
             type: User,
             args: {
@@ -46,9 +58,9 @@ const RootMutation = new GraphQLObjectType({
             resolve (user,args){
                 const userEdit=db.models.user.findOne({attributes:['id'], where:{id:args.id}});
                 return db.models.user.destroy({where:{id:args.id}});
-
             }
         },
+        //todo обработать все поля в resolve из args
         addCar: {
             type: Car,
             args:{
@@ -62,6 +74,7 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.car.create(args);
             }
         },
+        //todo обработать все поля в resolve из args
         updateCar: {
             type: Car,
             args:{
@@ -76,6 +89,7 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.car.update(args,{where: {id:args.id}});
             }
         },
+        //todo обработать все поля в resolve из args
         deleteCar: {
             type: Car,
             args:{
@@ -85,6 +99,7 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.car.destroy({where: {id:args.id}});
             }
         },
+        //todo обработать все поля в resolve из args
         addPhoto: {
             type: Photo,
             args:{
@@ -97,6 +112,7 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.photo.create(args);
             }
         },
+        //todo обработать все поля в resolve из args
         updatePhoto: {
             type: Photo,
             args:{
@@ -109,6 +125,7 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.photo.update(args,{where:{id:args.id}});
             }
         },
+        //todo обработать все поля в resolve из args
         deletePhoto: {
             type: Photo,
             args:{

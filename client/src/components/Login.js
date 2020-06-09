@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, {Component} from "react";
 import {RegisterURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {addUserMutation } from '../queries/queries';

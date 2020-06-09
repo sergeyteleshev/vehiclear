@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    XAxis, YAxis, CartesianGrid, Tooltip
 } from 'recharts';
 import Area from "recharts/es6/cartesian/Area";
 import AreaChart from "recharts/es6/chart/AreaChart";

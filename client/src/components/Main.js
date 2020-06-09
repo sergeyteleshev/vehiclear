@@ -18,12 +18,12 @@ export class Main extends Component {
                         <SliderComponent/>
                         <div className={"content__slider__buttons"}>
                             <div className={"content__slider__buttons__camera"}>
-                                <img src={camera} className={"camera-icon"}/>
+                                <img src={camera} className={"camera-icon"} alt={"camera icon"}/>
                                 <label htmlFor="files" className="content__slider__buttons__camera__button">Сфотографировать</label>
                                 <input accept="image/jpeg, image/png, image/jpg" capture="user" id="files" style={{visibility:'hidden'}} type="file"/>
                             </div>
                             <div className={"content__slider__buttons__gallery"}>
-                                <img src={gallery} className={"gallery-icon"}/>
+                                <img src={gallery} className={"gallery-icon"} alt={"gallery-icon"}/>
                                 <label htmlFor="files" className="content__slider__buttons__gallery__button">Загрузить из галлереи</label>
                                 <input accept={"image/jpeg, image/png, image/jpg"} id="files" style={{visibility:'hidden'}} type="file"/>
                             </div>

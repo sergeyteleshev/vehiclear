@@ -11,7 +11,11 @@ import IntroLoader from "./components/IntroLoader";
 import Register from "./components/Register";
 
 const client = new ApolloClient({
-    uri: 'http://localhost:5000/main'
+    uri: 'http://localhost:5000/main',
+    onError: ({ networkError, graphQLErrors }) => {
+        console.log('graphQLErrors', graphQLErrors);
+        console.log('networkError', networkError);
+    },
 });
 
 function App() {

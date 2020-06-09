@@ -550,6 +550,24 @@ select {
 {
   color: #00973A;
 }
+
+.message-error
+{
+  color: red;
+}
+
+.message-success
+{
+  color: #00973A;
+}
+
+.register-response-message
+{
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 20px;
+  font-family: 'Roboto', serif;
+}
 /*Регистрация*/
 
 
