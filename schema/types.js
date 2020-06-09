@@ -161,6 +161,37 @@ const Car = new GraphQLObjectType({
     }
 );
 
+const CarQueryInput= new GraphQLInputObjectType({
+    name: 'carCSVIn',
+    description: 'list of all the cars',
+    fields: () => ({
+        id: {
+            type: GraphQLInt
+        }
+}
+)});
+const CarQueryResponse= new GraphQLObjectType({
+        name: 'carCSV',
+        description: 'list of all the cars',
+        fields: () => ({
+            url: {
+                type: GraphQLString,
+                resolve (carCSV) {
+                    return carCSV.url;
+                }
+            }
+        })
+}
+);
+// const Query= new GraphQLObjectType({
+//     name: 'report',
+//     description: 'list of all the cars',
+//     fields: () => ({
+//             generateCsv(input: carCSVIn): generateCsvResponse!
+//
+//     }
+// }
+
 Car._typeConfig = {
     sqlTable: 'cars',
     uniqueKey: 'id'

@@ -1,4 +1,4 @@
-import { GraphQLError } from 'graphql';
+const { GraphQLError }=require( 'graphql');
 
 class ValidationError extends GraphQLError {
     constructor(errors) {
@@ -14,4 +14,4 @@ class ValidationError extends GraphQLError {
     }
 }
 
-export default ValidationError;
+exports.ValidationError=ValidationError;
