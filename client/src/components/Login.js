@@ -1,21 +1,67 @@
 import React, {Component} from "react";
 import {RegisterURL} from "./consts/Links";
 import {Link} from "react-router-dom";
-import {addUserMutation } from '../queries/queries';
-import { graphql } from 'react-apollo'
+import {authorizeUserMutation} from '../queries/queries';
+import {graphql} from 'react-apollo'
 
-export class Login extends Component {
+const bcrypt = require('bcryptjs');
+
+class Login extends Component
+{
     constructor(props) {
         super(props);
         this.state = {
             login: "",
             password: "",
             incorrectData: false,
+            isLogged: false,
+            isResponseMessageShowing: false,
+            responseMessage: "",
         };
     }
 
+    async login(login, password)
+    {
+        console.log(login, password);
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        if(login.length > 0 && password.length > 0)
+        {
+            const response = await this.props.authorizeUserMutation({
+                variables: {
+                    login,
+                    password: hashPassword,
+                }
+            });
+
+            console.log(response);
+
+            if(response.data !== null)
+            {
+                this.setState({isLogged: true});
+            }
+            else
+            {
+                this.setState({
+                    isResponseMessageShowing: false,
+                    responseMessage: "",
+                });
+            }
+        }
+        else
+        {
+            this.setState({
+                isResponseMessageShowing: true,
+                responseMessage: "Заполните все поля!",
+            });
+        }
+    }
+
     render() {
-        const {login, password} = this.state;
+        const {login, password, isResponseMessageShowing, responseMessage} = this.state;
+        console.log(this.props);
+
+        const responseMessageDiv = isResponseMessageShowing ? <div className={"login-response-message login-message-error"}>{responseMessage}</div>: "";
 
         return <div className={"login-page"}>
             <div className={"login-logo"}>
@@ -26,9 +72,10 @@ export class Login extends Component {
                 <input name="login" onChange={(e) => this.setState({login: e.target.value})} value={login} type={"text"} placeholder={"login"}/>
                 <input name="password" onChange={(e) => this.setState({password: e.target.value})} value={password} type={"password"} placeholder={"password"}/>
                 <div className={"login-action"}>
-                    <input onClick={this.tryLogin} type={"submit"} value={"Войти"}/>
+                    <input onClick={() => this.login(login, password)} type={"submit"} value={"Войти"}/>
                     <Link to={RegisterURL}>Ещё нет аккаунта?</Link>
                 </div>
+                {responseMessageDiv}
             </div>
             <div className={"login-tips"}>
                 Мы поможем вам освободить парковочное место
@@ -37,4 +84,4 @@ export class Login extends Component {
     }
 }
 
-export default graphql(addUserMutation, { name: "addUserMutation" })(Login);
+export default graphql(authorizeUserMutation, { name: "authorizeUserMutation" })(Login);

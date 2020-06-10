@@ -50,23 +50,28 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundUser = await db.models.user.findAll({raw: true, where: {login: args.login}});
-                if(foundUser.length != 0){
-                if (foundUser[0].login.length) {
+                if(foundUser.length !== 0){
+                if (foundUser[0].login.length)
+                {
                     errors.push({key: 'login', message: 'A user with this login already exists.'});
-                } else if (foundUser[0].id.length) {
+                }
+                else if (foundUser[0].id.length)
+                {
                     errors.push({key: 'id', message: 'A user with this id already exists.'});
-                } else if (foundUser[0].FIO.length) {
+                }
+                else if (foundUser[0].FIO.length)
+                {
                     errors.push({key: 'FIO', message: 'A user with this FIO already exists.'});
                 }
 
                 if (errors.length)
-                    throw new ValidationError(errors);}
-            else
-
-{
-                args.password = await bcrypt.hash(args.password, 10);
-
-                return db.models.user.create(args);}
+                    throw new ValidationError(errors);
+                }
+                else
+                {
+                    args.password = await bcrypt.hash(args.password, 10);
+                    return db.models.user.create(args);
+                }
             }
         },
         updateUser: {
@@ -80,7 +85,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(user, args) {
                 let errors = [];
                 const foundUser = await db.models.user.findAll({raw: true, where: {login: args.id}});
-                if (foundUser.length == 0) {
+                if (foundUser.length === 0) {
                     errors.push({key: 'id', message: 'A user with this id not exists.'});
                 }
                 if (errors.length)
@@ -97,7 +102,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(user, args) {
                 let errors = [];
                 const foundUserID = await db.models.user.findAll({raw: true, where: {id: args.id}});
-                if ( foundUserID.length == 0) {
+                if ( foundUserID.length === 0) {
                     errors.push({key: 'error', message: 'A user with this data not exists.'});
                 }
                 if (errors.length)
@@ -105,7 +110,41 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.user.destroy({where: {id: args.id}});
             }
         },
+        authorizeUser: {
+            type: User,
+            args: {
+                login: {type: GraphQLString},
+                password: {type: GraphQLString},
+            },
+            async resolve(root, args) {
+                //const userTable=db.models.user;
+                let errors = [];
+                const password = await bcrypt.hash(args.password, 10);
 
+                if (args.login == null) {
+                    errors.push({key: 'login', message: 'The login must not be empty.'});
+                }
+                //await throwError("args.password",userTable);
+                if (args.password == null) {
+                    errors.push({key: 'password', message: 'The password must not be empty.'});
+                }
+
+                if (errors.length)
+                    throw new ValidationError(errors);
+
+                const foundUser = await db.models.user.findOne({where: {login: args.login}});
+                if(foundUser.login === args.login && foundUser.password === password)
+                    return foundUser;
+                else
+                {
+                    //todo вот тут почему-то разные пароли вылетают. почему? одна и та же функция, лол
+                    errors.push({key: 'login', message: password + " 123 " + foundUser.password});
+                }
+
+                if (errors.length)
+                    throw new ValidationError(errors);
+            }
+        },
         addCar: {
             type: Car,
             args: {
@@ -132,7 +171,7 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundCar = await db.models.car.findAll({raw: true, where: {gos_numb: args.gos_numb}});
-                if (foundCar.length!=0) {
+                if (foundCar.length!==0) {
                     if (foundCar[0].gos_numb.length) {
                     errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
                 } else if (foundCar[0].id.length) {
@@ -158,7 +197,7 @@ const RootMutation = new GraphQLObjectType({
                 let errors = [];
                 const foundCar = await db.models.car.findAll({raw: true, where: {id: args.id}});
 
-                if (foundCar.length == 0) {
+                if (foundCar.length === 0) {
                     errors.push({key: 'gos_numb', message: 'A car with this gos_numb not exists.'});
                 }
                 if (errors.length)
@@ -174,7 +213,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(root, args) {
                 let errors = [];
                 const foundCarID = await db.models.car.findAll({raw: true, where: {id: args.id}});
-                if (foundCarID.length == 0) {
+                if (foundCarID.length === 0) {
                     errors.push({key: 'error', message: 'A car with this data not exists.'});
                 }
                 if (errors.length)
@@ -202,7 +241,7 @@ const RootMutation = new GraphQLObjectType({
                 if (errors.length)
                     throw new ValidationError(errors);
                  const foundPhoto = await db.models.photo.findAll({raw: true, where: {id: args.id}});
-               if(foundPhoto.length!=0)
+               if(foundPhoto.length!==0)
                   { if (foundPhoto[0].photo.length) {
                     errors.push({key: 'photo', message: 'A photo with this address already assigned.'});
                 } else if (foundPhoto[0].id.length) {
@@ -225,7 +264,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(root, args) {
                 let errors = [];
                 const foundPhoto = await db.models.photo.findAll({raw: true, where: {id: args.id}});
-                if (foundPhoto.length == 0) {
+                if (foundPhoto.length === 0) {
                     errors.push({key: 'id', message: 'A photo with this id not exists.'});
                 }
                 if (errors.length)
@@ -233,7 +272,6 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.photo.update(args, {where: {id: args.id}});
             }
         },
-
         deletePhoto: {
             type: Photo,
             args: {
@@ -242,7 +280,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(root, args) {
                 let errors = [];
                 const foundPhoto = await db.models.photo.findAll({raw: true, where: {id: args.id}});
-                if (foundPhoto.length == 0) {
+                if (foundPhoto.length === 0) {
                     errors.push({key: 'id', message: 'A photo with this id not exists.'});
                 }
                 if (errors.length)
@@ -251,7 +289,6 @@ const RootMutation = new GraphQLObjectType({
                 return db.models.photo.destroy({where: {id: args.id}});
             }
         }
-
     }
 });
 

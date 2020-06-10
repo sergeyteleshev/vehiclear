@@ -3,8 +3,9 @@ import {LoginURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {addUserMutation} from "../queries/queries";
 import { graphql } from 'react-apollo';
+import {getCookie, setCookie} from "./helpers/helpers";
 
-export class Register extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,12 +16,11 @@ export class Register extends Component {
             FIO: "",
             isResponseMessageShowing: false,
             responseMessage: "",
-            isError: false,
         };
     }
 
     async register(login, password, passwordAgain, FIO) {
-        if(login.length > 0 && password.length > 0 && passwordAgain.length > 0 && password === passwordAgain)
+        if(login.length > 0 && password.length > 0 && passwordAgain.length > 0 && FIO.length > 0 && password === passwordAgain)
         {
             const response = await this.props.addUserMutation({
                 variables: {
@@ -34,13 +34,16 @@ export class Register extends Component {
 
             if(response.data !== null)
             {
+                const user = response.data.addUser;
+                setCookie('user', JSON.stringify(user));
+                console.log(JSON.parse(getCookie('user')));
+
                 this.setState({isRegistered: true});
             }
             else
             {
                 this.setState({
                     isResponseMessageShowing: false,
-                    isError: false,
                     responseMessage: "",
                     isRegistered: true,
                 });
@@ -50,7 +53,6 @@ export class Register extends Component {
         {
             this.setState({
                 isResponseMessageShowing: true,
-                isError: true,
                 responseMessage: "Несовпадают пароли!",
             });
         }
@@ -58,7 +60,6 @@ export class Register extends Component {
         {
             this.setState({
                 isResponseMessageShowing: true,
-                isError: true,
                 responseMessage: "Заполните все поля!",
             });
         }
@@ -66,9 +67,9 @@ export class Register extends Component {
 
     render() {
         const {login, password, passwordAgain, FIO, isResponseMessageShowing,
-            responseMessage, isError} = this.state;
+            responseMessage} = this.state;
 
-        const responseMessageDiv = isError ? <div className={"register-response-message message-error"}>{responseMessage}</div>: "";
+        const responseMessageDiv = isResponseMessageShowing ? <div className={"register-response-message message-error"}>{responseMessage}</div>: "";
 
         return <div className={"register-page"}>
             <div className={"register-logo"}>

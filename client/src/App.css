@@ -449,6 +449,17 @@ select {
   color: #FF473A;
 }
 
+.login-response-message
+{
+  margin-top: 20px;
+  font-family: 'Roboto', serif;
+}
+
+.login-message-error
+{
+  color: #FF473A;
+}
+
 /*Логин*/
 
 /*Регистрация*/
