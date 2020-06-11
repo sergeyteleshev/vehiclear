@@ -6,7 +6,7 @@ import SliderComponent from "./widgets/SliderComponent";
 import {LoginURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 
-export class Main extends Component {
+class Main extends Component {
     constructor(props)
     {
         super(props);
@@ -17,36 +17,65 @@ export class Main extends Component {
         }
     }
 
-    success(position) {
-        this.setState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-        });
-    }
+    success = position => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
-    error() {
+        if(latitude && longitude)
+        {
+            this.setState({
+                latitude,
+                longitude,
+            });
+        }
+        else
+        {
+            this.setState({
+                isMapShowing: true,
+            })
+        }
+    };
+
+    error = () => {
         this.setState({
             isMapShowing: true,
         })
-    }
+    };
 
-    getFindMe()
+    geoFindMe = () =>
     {
-        navigator.geolocation.getCurrentPosition(this.success, this.error);
-    }
+        return navigator.geolocation.getCurrentPosition(this.success, this.error);
+    };
 
-    addCar(event)
+    addCar = (event) =>
     {
-        this.getFindMe();
+        this.geoFindMe();
         this.setState({
             photo: event.target.files[0],
         });
-
-        console.log(this.state);
-    }
+    };
 
     render()
     {
+        let locationMessage = <p className={"location-message"}>
+            Разрешите приложению получить ваше местоположение, если вы находитесь возле заброшенного автомобиля, чтобы мы знали откуда его забрать.
+        </p>;
+
+        let inputs = <div className={"content__slider__buttons__gallery"}>
+            <img src={gallery} className={"gallery-icon"} alt={"gallery-icon"}/>
+            <label htmlFor="files" className="content__slider__buttons__gallery__button">Загрузить из галлереи</label>
+            <input onChange={this.addCar} accept={"image/jpeg, image/png, image/jpg"} id="files" style={{visibility:'hidden'}} type="file"/>
+        </div>;
+
+        if(this.state.isMapShowing)
+        {
+            inputs = <iframe
+                src="https://yandex.ru/map-widget/v1/?um=constructor%3A64ee000127dd1f1b3ccb6758f7c95da14edd2be9ab71369dd7911f7ef6fcb2a2&amp;source=constructor"
+                width="100%" height="400" frameBorder="0"></iframe>;
+
+            locationMessage = <p className={"location-message"}>Не удалось получить ваше местоположение. Пожалуйста, отметьте на карте расположение машины.</p>
+        }
+
         return <div className={"main"}>
             <div className={"main-logo"}>
                 <span className={"main-logo__span"}>VEHICLEAR!</span>
@@ -56,19 +85,14 @@ export class Main extends Component {
                     <Container>
                         <SliderComponent/>
                         <div className={"content__slider__buttons"}>
-                            <p>Разрешите приложению получить ваше местоположение, если вы находитесь возле заброшенного автомобиля, чтобы мы знали откуда его забрать</p>
+                            {locationMessage}
                             {/*<div className={"content__slider__buttons__camera"}>*/}
                             {/*    <img src={camera} className={"camera-icon"} alt={"camera icon"}/>*/}
                             {/*    <label htmlFor="files" className="content__slider__buttons__camera__button">Сфотографировать</label>*/}
                             {/*    <input accept="image/jpeg, image/png, image/jpg" capture="user" id="files" style={{visibility:'hidden'}} type="file"/>*/}
                             {/*</div>*/}
-                            <div className={"content__slider__buttons__gallery"}>
-                                <img src={gallery} className={"gallery-icon"} alt={"gallery-icon"}/>
-                                <label htmlFor="files" className="content__slider__buttons__gallery__button">Загрузить из галлереи</label>
-                                <input onChange={this.addCar} accept={"image/jpeg, image/png, image/jpg"} id="files" style={{visibility:'hidden'}} type="file"/>
-                            </div>
+                            {inputs}
                             <Link to={LoginURL}><input type={"button"} className={"content__slider__buttons__login"} value={"Авторизоваться и получить баллы"}/></Link>
-                            <button onClick={() => this.geoFindMe()}>TEST</button>
                         </div>
                     </Container>
                 </div>

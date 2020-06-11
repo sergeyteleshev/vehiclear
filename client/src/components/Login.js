@@ -23,18 +23,22 @@ class Login extends Component
     async login(login, password)
     {
         console.log(login, password);
-        const hashPassword = await bcrypt.hash(password, 10);
 
         if(login.length > 0 && password.length > 0)
         {
-            const response = await this.props.authorizeUserMutation({
-                variables: {
-                    login,
-                    password: hashPassword,
-                }
-            });
+            let response = {};
 
-            console.log(response);
+            try {
+                response = await this.props.authorizeUserMutation({
+                    variables: {
+                        login,
+                        password: password,
+                    }
+                });
+                console.log(response);
+            }catch (e) {
+
+            }
 
             if(response.data !== null)
             {
