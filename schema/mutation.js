@@ -3,9 +3,10 @@ const graphql = require("graphql");
 var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt,GraphQLList } = graphql;
 const { User, Car,PhotoInput,Photo } = require("./types");
-const bcrypt = require('bcryptjs');
 const validator=require('validator');
 const {ValidationError} =require( "./ValidationError");
+var bcrypt = require('bcrypt');
+//const pbkdf2 =require('pbkdf2');
 
 //todo: запилить функцию, чтобы не писать полотно кода
 // async function throwError(args,table) {
@@ -68,8 +69,10 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
                 }
                 else
-                {
-                    args.password = await bcrypt.hash(args.password, 10);
+                {   //var s=pbkdf2.generateSaltSync("hackme"); //salt
+                    var salt = bcrypt.genSaltSync(10);
+                    args.password = bcrypt.hashSync(args.password, salt);
+                    //console.log(bcrypt.compareSync("edwq",args.password));  use this to compare values
                     return db.models.user.create(args);
                 }
             }
