@@ -6,9 +6,10 @@ import {BrowserRouter, Route }from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from "./components/Login";
 import Main from "./components/Main";
-import {LoadingURL, LoginURL, MainURL, RegisterURL} from "./components/consts/Links";
+import {ExportCarsURL, LoadingURL, LoginURL, MainURL, RegisterURL} from "./components/consts/Links";
 import IntroLoader from "./components/IntroLoader";
 import Register from "./components/Register";
+import ExportCars from "./components/ExportCars";
 
 const client = new ApolloClient({
     uri: 'http://localhost:5000/main',
@@ -26,6 +27,7 @@ function App() {
               <Route exact path={LoginURL} component={Login}/>
               <Route exact path={RegisterURL} component={Register}/>
               <Route exact path={LoadingURL} component={IntroLoader}/>
+              <Route exact path={ExportCarsURL} component={ExportCars}/>
           </BrowserRouter>
       </ApolloProvider>
   );

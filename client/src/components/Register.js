@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import {LoginURL} from "./consts/Links";
+import {LoginURL, MainURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {addUserMutation} from "../queries/queries";
 import { graphql } from 'react-apollo';
 import {getCookie, setCookie} from "./helpers/helpers";
+import Navigator from "./Navigator";
 
 class Register extends Component {
     constructor(props) {
@@ -22,30 +23,34 @@ class Register extends Component {
     async register(login, password, passwordAgain, FIO) {
         if(login.length > 0 && password.length > 0 && passwordAgain.length > 0 && FIO.length > 0 && password === passwordAgain)
         {
-            const response = await this.props.addUserMutation({
-                variables: {
-                    login,
-                    password,
-                    FIO,
+            try {
+                const response = await this.props.addUserMutation({
+                    variables: {
+                        login,
+                        password,
+                        FIO,
+                    }
+                });
+
+                if(response.login !== null)
+                {
+                    const user = response.data.addUser;
+                    setCookie('user', JSON.stringify(user));
+                    console.log(JSON.parse(getCookie('user')));
+
+                    this.setState({
+                        isRegistered: true,
+                        isResponseMessageShowing: true,
+                        responseMessage: "",
+                    });
                 }
-            });
 
-            console.log(response);
-
-            if(response.data !== null)
-            {
-                const user = response.data.addUser;
-                setCookie('user', JSON.stringify(user));
-                console.log(JSON.parse(getCookie('user')));
-
-                this.setState({isRegistered: true});
             }
-            else
-            {
+            catch (e) {
+                console.error(e);
                 this.setState({
-                    isResponseMessageShowing: false,
-                    responseMessage: "",
-                    isRegistered: true,
+                    isResponseMessageShowing: true,
+                    responseMessage: "Такой юзер уже зарегистрирован",
                 });
             }
         }
@@ -66,6 +71,12 @@ class Register extends Component {
     }
 
     render() {
+        const userStr = getCookie('user');
+        if(userStr && JSON.parse(userStr).login.length > 0)
+        {
+            this.props.history.push(MainURL);
+        }
+
         const {login, password, passwordAgain, FIO, isResponseMessageShowing,
             responseMessage} = this.state;
 

@@ -30,3 +30,9 @@ export const setCookie = (key, value, options = {}) =>
 
     document.cookie = updatedCookie;
 };
+
+export const deleteCookie = (name) => {
+    setCookie(name, "", {
+        'max-age': -1
+    })
+};

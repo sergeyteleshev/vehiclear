@@ -1,8 +1,10 @@
 import React, {Component} from "react";
-import {RegisterURL} from "./consts/Links";
+import {MainURL, RegisterURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {authorizeUserMutation} from '../queries/queries';
 import {graphql} from 'react-apollo'
+import {getCookie} from "./helpers/helpers";
+import Navigator from "./Navigator";
 
 const bcrypt = require('bcryptjs');
 
@@ -62,6 +64,12 @@ class Login extends Component
     }
 
     render() {
+        const userStr = getCookie('user');
+        if(userStr && JSON.parse(userStr).login.length > 0)
+        {
+            this.props.history.push(MainURL);
+        }
+
         const {login, password, isResponseMessageShowing, responseMessage} = this.state;
         console.log(this.props);
 

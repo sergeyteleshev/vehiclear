@@ -582,6 +582,50 @@ select {
 /*Регистрация*/
 
 
+/*Навигатор*/
+.navigator
+{
+  position: relative;
+  top: 0;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.navigator .container
+{
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.right-nav
+{
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.greeting
+{
+  margin-right: 10px;
+}
+
+.left-nav a:not(:first-child)
+{
+  margin-left: 10px;
+}
+
+.logout:hover
+{
+  color: #FF473A;
+  text-decoration: underline;
+  cursor: pointer;
+}
+/*Навигатор*/
+
+
 @media only screen and (max-width: 600px) {
   /*Загрузка*/
 
