@@ -36,7 +36,6 @@ class Register extends Component {
                 {
                     const user = response.data.addUser;
                     setCookie('user', JSON.stringify(user));
-                    console.log(JSON.parse(getCookie('user')));
 
                     this.setState({
                         isRegistered: true,

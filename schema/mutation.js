@@ -7,6 +7,7 @@ const validator=require('validator');
 const {ValidationError} =require( "./ValidationError");
 var bcrypt = require('bcrypt');
 //const pbkdf2 =require('pbkdf2');
+var md5 = require('md5');
 
 //todo: запилить функцию, чтобы не писать полотно кода
 // async function throwError(args,table) {
@@ -69,10 +70,8 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
                 }
                 else
-                {   //var s=pbkdf2.generateSaltSync("hackme"); //salt
-                    var salt = bcrypt.genSaltSync(10);
-                    args.password = bcrypt.hashSync(args.password, salt);
-                    //console.log(bcrypt.compareSync("edwq",args.password));  use this to compare values
+                {
+                    args.password = md5(args.password);
                     return db.models.user.create(args);
                 }
             }
@@ -120,14 +119,13 @@ const RootMutation = new GraphQLObjectType({
                 password: {type: GraphQLString},
             },
             async resolve(root, args) {
-                //const userTable=db.models.user;
                 let errors = [];
-                const password = await bcrypt.hash(args.password, 10);
+                args.password = md5(args.password);
 
                 if (args.login == null) {
                     errors.push({key: 'login', message: 'The login must not be empty.'});
                 }
-                //await throwError("args.password",userTable);
+
                 if (args.password == null) {
                     errors.push({key: 'password', message: 'The password must not be empty.'});
                 }
@@ -136,12 +134,12 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundUser = await db.models.user.findOne({where: {login: args.login}});
-                if(foundUser.login === args.login && foundUser.password === password)
+                if(foundUser.login === args.login && foundUser.password === args.password)
                     return foundUser;
                 else
                 {
                     //todo вот тут почему-то разные пароли вылетают. почему? одна и та же функция, лол
-                    errors.push({key: 'login', message: password + " 123 " + foundUser.password});
+                    errors.push({key: 'login', message: args.password + " 123 " + foundUser.password});
                 }
 
                 if (errors.length)

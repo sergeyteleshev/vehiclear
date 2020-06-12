@@ -3,7 +3,7 @@ import {MainURL, RegisterURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {authorizeUserMutation} from '../queries/queries';
 import {graphql} from 'react-apollo'
-import {getCookie} from "./helpers/helpers";
+import {getCookie, setCookie} from "./helpers/helpers";
 import Navigator from "./Navigator";
 
 const bcrypt = require('bcryptjs');
@@ -24,8 +24,6 @@ class Login extends Component
 
     async login(login, password)
     {
-        console.log(login, password);
-
         if(login.length > 0 && password.length > 0)
         {
             let response = {};
@@ -37,7 +35,16 @@ class Login extends Component
                         password: password,
                     }
                 });
-                console.log(response);
+
+                const user = response.data.authorizeUser;
+                setCookie('user', JSON.stringify(user));
+
+                this.setState({
+                    incorrectData: false,
+                    isLogged: true,
+                    isResponseMessageShowing: false,
+                    responseMessage: "",
+                });
             }catch (e) {
 
             }
@@ -78,7 +85,7 @@ class Login extends Component
         return <div className={"login-page"}>
             <div className={"login-logo"}>
                 <span className={"login-logo__span"}>VEHICLEAR!</span>
-                <div className={"logo__svg"}></div>
+                <div className={"logo__svg"}/>
             </div>
             <div className={"login-form"}>
                 <input name="login" onChange={(e) => this.setState({login: e.target.value})} value={login} type={"text"} placeholder={"login"}/>

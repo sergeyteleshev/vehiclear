@@ -369,6 +369,12 @@ select {
   font-size: 24px;
 }
 
+.login-logo__span a
+{
+  color: white;
+  text-decoration: none;
+}
+
 .login-tips
 {
   margin-top: 40px;
@@ -612,9 +618,24 @@ select {
   margin-right: 10px;
 }
 
+.left-nav a, .right-nav a
+{
+  color: black;
+}
+
+.left-nav a:hover, .right-nav a:hover
+{
+  color: #FF473A;
+}
+
 .left-nav a:not(:first-child)
 {
-  margin-left: 10px;
+  margin-left: 15px;
+}
+
+.right-nav a:not(:last-child)
+{
+  margin-right: 15px;
 }
 
 .logout:hover

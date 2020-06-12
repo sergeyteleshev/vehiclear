@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {ExportCarsURL, LoginURL, MainURL} from "./consts/Links";
+import {ExportCarsURL, LoginURL, MainURL, RegisterURL} from "./consts/Links";
 import {deleteCookie, getCookie} from "./helpers/helpers";
 
 const initialState = {
@@ -38,6 +38,7 @@ class Navigator extends Component {
     {
         const greeting = <div className={"greeting"}>Привет, {this.state.login}!</div>;
         const logout = <span className={"logout"} onClick={this.logout}>Выйти</span>;
+        const register = <Link to={RegisterURL}>Регистрация</Link>;
         const login = <Link to={LoginURL}>Войти</Link>;
         const userStr = getCookie('user');
 
@@ -50,6 +51,7 @@ class Navigator extends Component {
                 <div className={"right-nav"}>
                     {this.state.login.length ? greeting : null}
                     {(userStr && JSON.parse(userStr).login.length) ? logout : login}
+                    {(userStr && JSON.parse(userStr).login.length) ? null : register}
                 </div>
             </div>
         </nav>;
