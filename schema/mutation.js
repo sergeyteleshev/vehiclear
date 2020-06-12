@@ -1,11 +1,9 @@
-
 const graphql = require("graphql");
 var db = require("../config");
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt,GraphQLList } = graphql;
 const { User, Car,PhotoInput,Photo } = require("./types");
 const validator=require('validator');
 const {ValidationError} =require( "./ValidationError");
-var bcrypt = require('bcrypt');
 //const pbkdf2 =require('pbkdf2');
 var md5 = require('md5');
 
@@ -138,8 +136,10 @@ const RootMutation = new GraphQLObjectType({
                     return foundUser;
                 else
                 {
-                    //todo вот тут почему-то разные пароли вылетают. почему? одна и та же функция, лол
-                    errors.push({key: 'login', message: args.password + " 123 " + foundUser.password});
+                    if(foundUser && foundUser.login !== args.login)
+                        errors.push({key: 'login', message: "Такого пользователя не существует"});
+                    else if(foundUser.password !== args.password)
+                        errors.push({key: 'login', message: "Неверный пароль"});
                 }
 
                 if (errors.length)

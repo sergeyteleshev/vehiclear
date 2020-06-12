@@ -4,9 +4,7 @@ import {Link} from "react-router-dom";
 import {authorizeUserMutation} from '../queries/queries';
 import {graphql} from 'react-apollo'
 import {getCookie, setCookie} from "./helpers/helpers";
-import Navigator from "./Navigator";
-
-const bcrypt = require('bcryptjs');
+import { onError } from "apollo-link-error";
 
 class Login extends Component
 {
@@ -15,7 +13,6 @@ class Login extends Component
         this.state = {
             login: "",
             password: "",
-            incorrectData: false,
             isLogged: false,
             isResponseMessageShowing: false,
             responseMessage: "",
@@ -40,24 +37,15 @@ class Login extends Component
                 setCookie('user', JSON.stringify(user));
 
                 this.setState({
-                    incorrectData: false,
                     isLogged: true,
                     isResponseMessageShowing: false,
                     responseMessage: "",
                 });
             }catch (e) {
-
-            }
-
-            if(response.data !== null)
-            {
-                this.setState({isLogged: true});
-            }
-            else
-            {
                 this.setState({
+                    isLogged: false,
                     isResponseMessageShowing: false,
-                    responseMessage: "",
+                    responseMessage: "Не удалось авторизоваться.",
                 });
             }
         }
@@ -72,13 +60,12 @@ class Login extends Component
 
     render() {
         const userStr = getCookie('user');
-        if(userStr && JSON.parse(userStr).login.length > 0)
+        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0)
         {
             this.props.history.push(MainURL);
         }
 
         const {login, password, isResponseMessageShowing, responseMessage} = this.state;
-        console.log(this.props);
 
         const responseMessageDiv = isResponseMessageShowing ? <div className={"login-response-message login-message-error"}>{responseMessage}</div>: "";
 

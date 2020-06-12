@@ -65,7 +65,7 @@ class Main extends Component {
             Разрешите приложению получить ваше местоположение, если вы находитесь возле заброшенного автомобиля, чтобы мы знали откуда его забрать.
         </p>;
 
-        if(userStr && JSON.parse(userStr).login.length > 0)
+        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0)
         {
             authorizeButton = null;
         }

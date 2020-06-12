@@ -71,7 +71,7 @@ class Register extends Component {
 
     render() {
         const userStr = getCookie('user');
-        if(userStr && JSON.parse(userStr).login.length > 0)
+        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0)
         {
             this.props.history.push(MainURL);
         }

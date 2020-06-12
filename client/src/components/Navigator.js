@@ -4,7 +4,7 @@ import {ExportCarsURL, LoginURL, MainURL, RegisterURL} from "./consts/Links";
 import {deleteCookie, getCookie} from "./helpers/helpers";
 
 const initialState = {
-    login: '',
+    login: "",
 };
 
 class Navigator extends Component {
@@ -49,7 +49,7 @@ class Navigator extends Component {
                     <Link to={ExportCarsURL}>Экспорт в csv</Link>
                 </div>
                 <div className={"right-nav"}>
-                    {this.state.login.length ? greeting : null}
+                    {(userStr && JSON.parse(userStr).login.length) ? greeting : null}
                     {(userStr && JSON.parse(userStr).login.length) ? logout : login}
                     {(userStr && JSON.parse(userStr).login.length) ? null : register}
                 </div>
