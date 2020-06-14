@@ -156,8 +156,15 @@ const Car = new GraphQLObjectType({
                         }
                         //sqlJoin: (carsTable, photosTable, args) => `${carsTable}.id = ${photosTable}.cars_id`
 
-        }
-        })
+        },
+            photoIn: {
+                type: Photo,
+                resolve(car) {
+                    return db.models.photo.findAll({raw: true, where: {car_id: car.id}});
+                }
+            }
+
+            })
     }
 );
 

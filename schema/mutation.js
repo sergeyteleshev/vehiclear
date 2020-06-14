@@ -153,7 +153,8 @@ const RootMutation = new GraphQLObjectType({
                 gos_numb: {type: GraphQLString},
                 location: {type: GraphQLString},
                 state: {type: GraphQLBoolean},
-                reports_counter: {type: GraphQLInt}
+                reports_counter: {type: GraphQLInt},
+                photoIn:{type: PhotoInput}
             },
             async resolve(root, args) {
                 let errors = [];
@@ -181,7 +182,7 @@ const RootMutation = new GraphQLObjectType({
                     if (errors.length)
                         throw new ValidationError(errors);
                 }
-
+                db.models.photo.create(args.photoIn);
                 return db.models.car.create(args);
             }
         },
