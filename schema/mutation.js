@@ -1,9 +1,9 @@
 const graphql = require("graphql");
 var db = require("../config");
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean,GraphQLInt,GraphQLList } = graphql;
-const { User, Car,PhotoInput,Photo } = require("./types");
-const validator=require('validator');
-const {ValidationError} =require( "./ValidationError");
+const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLList} = graphql;
+const {User, Car, PhotoInput, Photo} = require("./types");
+const validator = require('validator');
+const {ValidationError} = require("./ValidationError");
 //const pbkdf2 =require('pbkdf2');
 var md5 = require('md5');
 
@@ -50,25 +50,18 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundUser = await db.models.user.findAll({raw: true, where: {login: args.login}});
-                if(foundUser.length !== 0){
-                if (foundUser[0].login.length)
-                {
-                    errors.push({key: 'login', message: 'A user with this login already exists.'});
-                }
-                else if (foundUser[0].id.length)
-                {
-                    errors.push({key: 'id', message: 'A user with this id already exists.'});
-                }
-                else if (foundUser[0].FIO.length)
-                {
-                    errors.push({key: 'FIO', message: 'A user with this FIO already exists.'});
-                }
+                if (foundUser.length !== 0) {
+                    if (foundUser[0].login.length) {
+                        errors.push({key: 'login', message: 'A user with this login already exists.'});
+                    } else if (foundUser[0].id.length) {
+                        errors.push({key: 'id', message: 'A user with this id already exists.'});
+                    } else if (foundUser[0].FIO.length) {
+                        errors.push({key: 'FIO', message: 'A user with this FIO already exists.'});
+                    }
 
-                if (errors.length)
-                    throw new ValidationError(errors);
-                }
-                else
-                {
+                    if (errors.length)
+                        throw new ValidationError(errors);
+                } else {
                     args.password = md5(args.password);
                     return db.models.user.create(args);
                 }
@@ -102,7 +95,7 @@ const RootMutation = new GraphQLObjectType({
             async resolve(user, args) {
                 let errors = [];
                 const foundUserID = await db.models.user.findAll({raw: true, where: {id: args.id}});
-                if ( foundUserID.length === 0) {
+                if (foundUserID.length === 0) {
                     errors.push({key: 'error', message: 'A user with this data not exists.'});
                 }
                 if (errors.length)
@@ -132,13 +125,12 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundUser = await db.models.user.findOne({where: {login: args.login}});
-                if(foundUser.login === args.login && foundUser.password === args.password)
+                if (foundUser.login === args.login && foundUser.password === args.password)
                     return foundUser;
-                else
-                {
-                    if(foundUser && foundUser.login !== args.login)
+                else {
+                    if (foundUser && foundUser.login !== args.login)
                         errors.push({key: 'login', message: "Такого пользователя не существует"});
-                    else if(foundUser.password !== args.password)
+                    else if (foundUser.password !== args.password)
                         errors.push({key: 'login', message: "Неверный пароль"});
                 }
 
@@ -154,7 +146,7 @@ const RootMutation = new GraphQLObjectType({
                 location: {type: GraphQLString},
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
-                photoIn:{type: PhotoInput}
+                photoIn: {type: PhotoInput}
             },
             async resolve(root, args) {
                 let errors = [];
@@ -173,12 +165,12 @@ const RootMutation = new GraphQLObjectType({
                     throw new ValidationError(errors);
 
                 const foundCar = await db.models.car.findAll({raw: true, where: {gos_numb: args.gos_numb}});
-                if (foundCar.length!==0) {
+                if (foundCar.length !== 0) {
                     if (foundCar[0].gos_numb.length) {
-                    errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
-                } else if (foundCar[0].id.length) {
-                    errors.push({key: 'id', message: 'A car with this id already exists.'});
-              }
+                        errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
+                    } else if (foundCar[0].id.length) {
+                        errors.push({key: 'id', message: 'A car with this id already exists.'});
+                    }
                     if (errors.length)
                         throw new ValidationError(errors);
                 }
@@ -242,16 +234,16 @@ const RootMutation = new GraphQLObjectType({
                 }
                 if (errors.length)
                     throw new ValidationError(errors);
-                 const foundPhoto = await db.models.photo.findAll({raw: true, where: {id: args.id}});
-               if(foundPhoto.length!==0)
-                  { if (foundPhoto[0].photo.length) {
-                    errors.push({key: 'photo', message: 'A photo with this address already assigned.'});
-                } else if (foundPhoto[0].id.length) {
-                    errors.push({key: 'id', message: 'A photo with this id already exists.'});
+                const foundPhoto = await db.models.photo.findAll({raw: true, where: {id: args.id}});
+                if (foundPhoto.length !== 0) {
+                    if (foundPhoto[0].photo.length) {
+                        errors.push({key: 'photo', message: 'A photo with this address already assigned.'});
+                    } else if (foundPhoto[0].id.length) {
+                        errors.push({key: 'id', message: 'A photo with this id already exists.'});
+                    }
+                    if (errors.length)
+                        throw new ValidationError(errors);
                 }
-                      if (errors.length)
-                          throw new ValidationError(errors);
-                  }
                 return db.models.photo.create(args);
             }
         },
