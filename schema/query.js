@@ -4,7 +4,6 @@ const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLInt} = r
 const {User, Car, Photo, PhotoInput, CarQueryReport} = require("./types");
 const fs = require('fs');
 const converter = require('json-2-csv');
-const fileUrl = require('file-url');
 const url = require('url');
 const path = require("path");
 
@@ -69,15 +68,6 @@ var Query = new GraphQLObjectType({
                         type: GraphQLInt
                     }
                 },
-                // where: (cars, args, context) => {
-                //     if (args.id) return `${carsTable}.id = ${args.id}`
-                // },
-                // resolve: (parent, args, context, resolveInfo) => {
-                //     return joinMonster.default(resolveInfo, {}, sql => {
-                //         // knex is a query library for SQL databases
-                //         return knex.raw(sql)
-                //     })
-
                 resolve(root, args) {
                     return db.models.car.findAll({where: args});
                 }

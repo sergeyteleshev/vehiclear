@@ -1,6 +1,7 @@
 const graphql = require("graphql");
 const {GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLInputObjectType, GraphQLList} = graphql;
-var db = require("../config");
+const db = require("../config");
+const ObjectsToCsv = require('objects-to-csv');
 
 var User = new GraphQLObjectType({
         name: 'user',

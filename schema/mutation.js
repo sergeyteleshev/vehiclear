@@ -1,11 +1,10 @@
 const graphql = require("graphql");
-var db = require("../config");
+const db = require("../config");
 const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLList} = graphql;
 const {User, Car, PhotoInput, Photo} = require("./types");
 const validator = require('validator');
 const {ValidationError} = require("./ValidationError");
-//const pbkdf2 =require('pbkdf2');
-var md5 = require('md5');
+const md5 = require('md5');
 
 //todo: запилить функцию, чтобы не писать полотно кода
 // async function throwError(args,table) {
