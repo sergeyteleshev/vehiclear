@@ -27,3 +27,13 @@ mutation AuthorizeUser($login: String!, $password: String!)
     }
 }
 `;
+
+export const downloadCarsCsvQuery = gql`
+{
+    Report
+    {
+        id
+        url
+    }
+}
+`;
