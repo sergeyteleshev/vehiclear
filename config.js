@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var Sequelize = require('sequelize');
 var _ = require('lodash');
 
-var db = new Sequelize('vehicle', 'root', 'root', {
+var db = new Sequelize('vehicle', 'root', 'qwerty', {
     host: 'localhost',
     dialect: 'mysql',
 });

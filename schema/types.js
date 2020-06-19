@@ -185,7 +185,18 @@ const CarQueryReport = new GraphQLObjectType({
                 resolve(carCSV) {
                     return carCSV.url;
                 }
-
+            },
+            dateFrom: {
+                type: GraphQLString,
+                resolve(carCSV) {
+                    return carCSV.dateFrom;
+                }
+            },
+            dateTo: {
+                type: GraphQLString,
+                resolve(carCSV) {
+                    return carCSV.dateTo;
+                }
             }
 
         }

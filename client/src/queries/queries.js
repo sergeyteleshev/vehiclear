@@ -45,9 +45,11 @@ mutation AddCar($location: String, $login: String!, $photoIn: Upload!)
 }
 `;
 
+//TODO: здесь нужно на вход квери подавать id машины для экспорта - тогда сработает. Пофикси плиз  по моим изменениям
+
 export const downloadCarsCsvQuery = gql`
-{
-    Report
+{ query Report($id: Integer)         
+    Report (id: $id)
     {
         id
         url

@@ -6,6 +6,10 @@ const fs = require('fs');
 const converter = require('json-2-csv');
 const url = require('url');
 const path = require("path");
+const {ValidationError} = require("./ValidationError");
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+var dateFormat = require('dateformat');
 
 var id_car;
 var file;
@@ -80,14 +84,38 @@ var Query = new GraphQLObjectType({
                     },
                     url: {
                         type: GraphQLString
+                    },
+                    dateFrom: {
+                        type: GraphQLString
+                    },
+                    dateTo: {
+                        type: GraphQLString
                     }
                 },
                 async resolve(root, args) {
-                    id_car = args.id;
+
+                    if (args.id != null) {
+                        id_car = args.id;
+                        var car_data = await db.models.car.findOne({raw: true, where: args});
+                    }
+                    if (args.dateFrom != null && args.dateTo != null) {
+                        id_car = "";
+                        args.dateFrom = new Date(args.dateFrom);
+                        dateFromNew = dateFormat(args.dateFrom, "dd-mm-yyyy");
+                        args.dateTo = new Date(args.dateTo);
+                        dateToNew = dateFormat(args.dateTo, "dd-mm-yyyy");
+                        // console.log(args.dateTo);
+                        // console.log(args.dateFrom);
+                        var car_data = await db.models.car.findAll({
+                            raw: true,
+                            where: {createdAt: {[Op.between]: [dateFromNew, dateToNew]}} //date searched as day/mpnth/year. So in your  query  the first place should be for month
+                        })
+                    }
+                    ;
                     getFile(id_car);
-                    var car_data = await db.models.car.findOne({raw: true, where: args});
+
                     converter.json2csv(car_data, json2csvCallback, {
-                        prependHeader: false
+                        prependHeader: true
                     });
                     // getFile(id_car,file);
                     args.url = file.href;
