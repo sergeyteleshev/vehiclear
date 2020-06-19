@@ -7,6 +7,8 @@ import {LoginURL} from "./consts/Links";
 import {Link} from "react-router-dom";
 import {getCookie} from "./helpers/helpers";
 import Navigator from "./Navigator";
+import {addCarMutation} from "../queries/queries";
+import {graphql} from 'react-apollo'
 
 class Main extends Component {
     constructor(props)
@@ -55,6 +57,17 @@ class Main extends Component {
         this.setState({
             photo: event.target.files[0],
         });
+
+        const userStr = getCookie('user');
+        const {latitude, longitude, photo} = this.state;
+        const location = [latitude, longitude];
+
+        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0 && latitude
+            && longitude && photo)
+        {
+            // this.props.addCarMutation(location, photo, JSON.parse(userStr).login);
+            console.log(location, photo, JSON.parse(userStr).login);
+        }
     };
 
     render()
@@ -111,4 +124,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default graphql(addCarMutation, { name: "addCarMutation" })(Main);

@@ -87,10 +87,10 @@ class Register extends Component {
                 <div className={"logo__svg_black"}></div>
             </div>
             <div className={"register-form"}>
-                <input value={login} onChange={e => this.setState({login: e.target.value})} type={"text"} placeholder={"login"}/>
-                <input value={FIO} onChange={e => this.setState({FIO: e.target.value})} type={"text"} placeholder={"FIO"}/>
-                <input value={password} onChange={e => this.setState({password: e.target.value})} type={"password"} placeholder={"password"}/>
-                <input value={passwordAgain} onChange={e => this.setState({passwordAgain: e.target.value})} type={"password"} placeholder={"password again"}/>
+                <input value={login} onChange={e => this.setState({login: e.target.value})} type={"text"} placeholder={"Логин"}/>
+                <input value={FIO} onChange={e => this.setState({FIO: e.target.value})} type={"text"} placeholder={"ФИО"}/>
+                <input value={password} onChange={e => this.setState({password: e.target.value})} type={"password"} placeholder={"Пароль"}/>
+                <input value={passwordAgain} onChange={e => this.setState({passwordAgain: e.target.value})} type={"password"} placeholder={"Повторите пароль"}/>
                 <div className={"register-action"}>
                     <input onClick={() => this.register(login, password, passwordAgain, FIO)} type={"submit"} value={"Зарегистрироваться"}/>
                     <Link to={LoginURL}>Есть аккаунт?</Link>

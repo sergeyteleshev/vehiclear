@@ -4,7 +4,6 @@ import {Link} from "react-router-dom";
 import {authorizeUserMutation} from '../queries/queries';
 import {graphql} from 'react-apollo'
 import {getCookie, setCookie} from "./helpers/helpers";
-import { onError } from "apollo-link-error";
 
 class Login extends Component
 {
@@ -75,8 +74,8 @@ class Login extends Component
                 <div className={"logo__svg"}/>
             </div>
             <div className={"login-form"}>
-                <input name="login" onChange={(e) => this.setState({login: e.target.value})} value={login} type={"text"} placeholder={"login"}/>
-                <input name="password" onChange={(e) => this.setState({password: e.target.value})} value={password} type={"password"} placeholder={"password"}/>
+                <input name="login" onChange={(e) => this.setState({login: e.target.value})} value={login} type={"text"} placeholder={"Логин"}/>
+                <input name="password" onChange={(e) => this.setState({password: e.target.value})} value={password} type={"password"} placeholder={"Пароль"}/>
                 <div className={"login-action"}>
                     <input onClick={() => this.login(login, password)} type={"submit"} value={"Войти"}/>
                     <Link to={RegisterURL}>Ещё нет аккаунта?</Link>

@@ -28,6 +28,23 @@ mutation AuthorizeUser($login: String!, $password: String!)
 }
 `;
 
+export const addCarMutation = gql`
+mutation AddCar($location: String, $login: String!, $photoIn: Upload!)
+{
+    addCar(
+        location: $location
+        login: $login
+        photoIn: $photoIn
+    )
+    {      
+        id
+        login
+        gos_numb
+        location      
+    }
+}
+`;
+
 export const downloadCarsCsvQuery = gql`
 {
     Report
@@ -37,3 +54,4 @@ export const downloadCarsCsvQuery = gql`
     }
 }
 `;
+

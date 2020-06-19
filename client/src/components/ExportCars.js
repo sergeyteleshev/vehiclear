@@ -31,14 +31,11 @@ class ExportCars extends Component {
 
         if(this.props.downloadCarsCsvQuery.Report)
         {
-            // link.download = name;
             window.open(this.props.downloadCarsCsvQuery.Report.url, null);
-            // link.href = this.props.downloadCarsCsvQuery.Report.url;
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-
-            console.log(dateFrom, dateTo, this.props.downloadCarsCsvQuery.Report.url);
+            link.href = this.props.downloadCarsCsvQuery.Report.url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     };
 

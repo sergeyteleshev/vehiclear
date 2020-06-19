@@ -385,6 +385,7 @@ select {
 
 .login-form
 {
+  width: 330px;
   margin-top: 50px;
   display: flex;
   flex-direction: column;
@@ -408,6 +409,8 @@ select {
 
 .login-form input[type="text"], .login-form input[type="password"]
 {
+  font-family: 'Roboto', serif;
+  font-weight: bold;
   font-size: 14px;
   width: 100%;
   padding: 6px 20px;
@@ -497,6 +500,7 @@ select {
 
 .register-form
 {
+  width: 330px;
   margin-top: 50px;
   display: flex;
   flex-direction: column;
@@ -520,6 +524,8 @@ select {
 
 .register-form input[type="text"], .register-form input[type="password"]
 {
+  font-family: 'Roboto', serif;
+  font-weight: bold;
   font-size: 14px;
   width: 100%;
   padding: 6px 20px;
