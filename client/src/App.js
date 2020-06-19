@@ -12,7 +12,7 @@ import Register from "./components/Register";
 import ExportCars from "./components/ExportCars";
 
 const client = new ApolloClient({
-    uri: 'http://localhost:5000/main',
+    uri: 'http://localhost:9000/main',
     onError: ({ networkError, graphQLErrors }) => {
         console.log('graphQLErrors', graphQLErrors);
         console.log('networkError', networkError);

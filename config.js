@@ -2,15 +2,13 @@ var mysql = require('mysql');
 var Sequelize = require('sequelize');
 var _ = require('lodash');
 
-var db = new Sequelize('vehicle', 'root', 'qwerty', {
+var db = new Sequelize('vehicle', 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql',
-
 });
 
 var user = db.define('user', {
     id: {
-
         type: Sequelize.INTEGER,
         allowNull: true,
         primaryKey:true,
@@ -102,6 +100,7 @@ var car = db.define('car', {
 //
 //     });
 // });
+
 var photo = db.define('photo', {
     id: {
         type: Sequelize.INTEGER,
