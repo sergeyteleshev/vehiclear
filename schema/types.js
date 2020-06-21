@@ -42,6 +42,7 @@ var User = new GraphQLObjectType({
         }
     }
 );
+
 var PhotoInput = new GraphQLInputObjectType({
         name: 'photoinput',
         description: 'list of all the cars',
@@ -72,6 +73,9 @@ var PhotoInput = new GraphQLInputObjectType({
                 //     return photo.car_id;
                 // }
             },
+            location:{
+                type:GraphQLString
+            }
         }),
 
     }
@@ -103,6 +107,12 @@ const Photo = new GraphQLObjectType({
                 type: GraphQLInt,
                 resolve(photo) {
                     return photo.car_id;
+                }
+            },
+            location: {
+                type: GraphQLString,
+                resolve(photo) {
+                    return photo.location;
                 }
             }
 
@@ -159,6 +169,12 @@ const Car = new GraphQLObjectType({
                 }
                 //sqlJoin: (carsTable, photosTable, args) => `${carsTable}.id = ${photosTable}.cars_id`
 
+            },
+            userCreated:{
+                type:GraphQLString,
+                resolve(car){
+                    return car.userCreated;
+                }
             },
             photoIn: {
                 type: Photo,

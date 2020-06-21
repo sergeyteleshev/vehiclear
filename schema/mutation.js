@@ -18,6 +18,10 @@ const md5 = require('md5');
 //     if(errors.length)
 //         throw new ValidationError(errors);
 // }
+
+var gosNumbServer = "TU8078";
+
+
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
     type: "Mutation",
@@ -145,36 +149,87 @@ const RootMutation = new GraphQLObjectType({
                 location: {type: GraphQLString},
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
-                photoIn: {type: PhotoInput}
+                photoIn: {type: PhotoInput},
+                userCreated: {type: GraphQLString}
             },
             async resolve(root, args) {
+
                 let errors = [];
-                if (args.gos_numb == null) {
-                    errors.push({key: 'gos_numb', message: 'The gos_numb must not be empty.'});
+                var id;
+                if (args.id != null) {
+                    args.photoIn.car_id = args.id;
                 }
-                //await throwError("args.password",userTable);
                 if (args.location == null) {
-                    errors.push({key: 'location', message: 'The location must not be empty.'});
+                    if (args.photoIn.location == null) {
+                        args.location = "";
+                    }
+                    args.location = args.photoIn.location;
                 }
                 //await throwError("args.FIO",userTable);
                 if (args.reports_counter == null) {
                     errors.push({key: 'reports_counter', message: 'The reports_counter must not be empty.'});
                 }
+                if (args.reports_counter == null) {
+                    errors.push({key: 'reports_counter', message: 'The reports_counter must not be empty.'});
+                }
+                if (args.userCreated == null) {
+                    errors.push({key: 'userCreated', message: 'The userCreated must not be empty.'});
+                }
+                if (args.photoIn.photo == null || args.photoIn.photo.length === 0) {
+                    errors.push({key: 'photo', message: 'Please add photo'})
+                } else {
+                    if (!args.photoIn.photo.includes('.jpeg') && !args.photoIn.photo.includes('.jgg') && !args.photoIn.photo.includes('.png')) {
+                        errors.push({key: 'photo', message: 'Photo should be in .jgg or .jpeg or .png format'})
+                    }
+                }
                 if (errors.length)
                     throw new ValidationError(errors);
-
-                const foundCar = await db.models.car.findAll({raw: true, where: {gos_numb: args.gos_numb}});
-                if (foundCar.length !== 0) {
-                    if (foundCar[0].gos_numb.length) {
-                        errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
-                    } else if (foundCar[0].id.length) {
-                        errors.push({key: 'id', message: 'A car with this id already exists.'});
+                if (args.gos_numb == null) {
+                    if (gosNumbServer == null) {
+                        errors.push({key: 'gos_numb', message: 'gos_numb should be filled'});
                     }
+                    args.gos_numb = gosNumbServer;
+                }
+                const foundCar = await db.models.car.findAll({raw: true, where: {gos_numb: args.gos_numb}});
+
+                if (foundCar.length !== 0) {
+                    errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
                     if (errors.length)
                         throw new ValidationError(errors);
                 }
-                db.models.photo.create(args.photoIn);
-                return db.models.car.create(args);
+
+                // else args.gos_numb=gosNumbServer; //то что приходит со стороннего сервиса
+
+                const foundUser = await db.models.user.findAll({raw: true, where: {login: args.userCreated}});
+                if (foundUser.length == 0) {
+                    errors.push({key: 'userCreated', message: 'Enter existing user login.'});
+                    if (errors.length)
+                        throw new ValidationError(errors);
+                }
+
+                await db.models.car.create(args);
+
+                var carID= await db.models.car.findOne({
+                    //attributes:[id],
+                    raw: true,
+                    where: {gos_numb: args.gos_numb}
+                });
+                args.photoIn.car_id=carID.id;
+
+                await db.models.photo.create(args.photoIn);
+
+                if (args.location == null) {
+                    errors.push({key: 'location', message: 'Enter location.'});
+                    if (errors.length)
+                        throw new ValidationError(errors);
+                }
+
+                return {
+                    id:carID.id,
+                    gos_numb: args.gos_numb
+                }
+
+
             }
         },
         updateCar: {
@@ -220,7 +275,8 @@ const RootMutation = new GraphQLObjectType({
                 id: {type: GraphQLInt},
                 photo: {type: GraphQLString},
                 date: {type: GraphQLString},
-                car_id: {type: GraphQLInt}
+                car_id: {type: GraphQLInt},
+                location: {type: GraphQLString}
             },
             async resolve(root, args) {
                 let errors = [];
@@ -252,7 +308,8 @@ const RootMutation = new GraphQLObjectType({
                 id: {type: GraphQLInt},
                 photo: {type: GraphQLString},
                 date: {type: GraphQLString},
-                car_id: {type: GraphQLInt}
+                car_id: {type: GraphQLInt},
+                location: {type: GraphQLString}
             },
             async resolve(root, args) {
                 let errors = [];

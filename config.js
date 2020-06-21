@@ -56,7 +56,7 @@ var car = db.define('car', {
     },
     location: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     //побитый или нет
     state: {
@@ -70,6 +70,10 @@ var car = db.define('car', {
     photo: {
         type: Sequelize.STRING,
         allowNull: true
+    },
+    userCreated:{
+        type:Sequelize.STRING,
+        allowNull:false
     }
 });
 
