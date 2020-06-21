@@ -10,14 +10,13 @@ const {ValidationError} = require("./ValidationError");
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 var dateFormat = require('dateformat');
+const server = require("../server");
+
 
 var id_car;
 var file;
-
 var getFile = function (id_csv) {
     file = 'exports/car' + id_csv + '_' + new Date().getTime() + '.csv';
-    var absolutePath = path.resolve(file);
-    file = url.pathToFileURL(absolutePath);
 };
 var json2csvCallback = function (err, csv) {
     // id_csv=id_car;
@@ -117,8 +116,9 @@ var Query = new GraphQLObjectType({
                     converter.json2csv(car_data, json2csvCallback, {
                         prependHeader: true
                     });
+                    var fileServer = file.replace("exports", server.protocol + "://" + server.address + ":" + server.PORT);
                     // getFile(id_car,file);
-                    args.url = file.href;
+                    args.url = fileServer;
                     return {
                         id: args.id,
                         url: args.url
