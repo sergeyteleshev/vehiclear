@@ -1,35 +1,7 @@
 const db = require("../config");
-const validator = require('validator');
-const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLInt} = require("graphql");
-const {User, Car, Photo, PhotoInput, CarQueryReport} = require("./types");
-const fs = require('fs');
-const converter = require('json-2-csv');
-const url = require('url');
-const path = require("path");
-const {ValidationError} = require("./ValidationError");
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-var dateFormat = require('dateformat');
-const server = require("../server");
+const {GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt} = require("graphql");
+const {User, Car, Photo} = require("./types");
 
-
-var id_car;
-var file;
-var getFile = function (id_csv) {
-    file = 'exports/car' + id_csv + '_' + new Date().getTime() + '.csv';
-};
-var json2csvCallback = function (err, csv) {
-    // id_csv=id_car;
-    if (err) throw err;
-
-    fs.writeFile(file, csv, 'utf8', function (err) {
-        if (err) {
-            console.log('Some error occured - file either not saved or corrupted file saved.');
-        } else {
-            console.log('It\'s saved!');
-        }
-    });
-};
 var Query = new GraphQLObjectType({
     name: 'Query',
     description: 'Root query object',
@@ -73,57 +45,6 @@ var Query = new GraphQLObjectType({
                 },
                 resolve(root, args) {
                     return db.models.car.findAll({where: args});
-                }
-            },
-            Report: {
-                type: CarQueryReport,
-                args: {
-                    id: {
-                        type: GraphQLInt
-                    },
-                    url: {
-                        type: GraphQLString
-                    },
-                    dateFrom: {
-                        type: GraphQLString
-                    },
-                    dateTo: {
-                        type: GraphQLString
-                    }
-                },
-                async resolve(root, args) {
-
-                    if (args.id != null) {
-                        id_car = args.id;
-                        var car_data = await db.models.car.findOne({raw: true, where: args});
-                    }
-                    if (args.dateFrom != null && args.dateTo != null) {
-                        id_car = "";
-                        args.dateFrom = new Date(args.dateFrom);
-                        dateFromNew = dateFormat(args.dateFrom, "dd-mm-yyyy");
-                        args.dateTo = new Date(args.dateTo);
-                        dateToNew = dateFormat(args.dateTo, "dd-mm-yyyy");
-                        // console.log(args.dateTo);
-                        // console.log(args.dateFrom);
-                        var car_data = await db.models.car.findAll({
-                            raw: true,
-                            where: {createdAt: {[Op.between]: [dateFromNew, dateToNew]}} //date searched as day/mpnth/year. So in your  query  the first place should be for month
-                        })
-                    }
-                    ;
-                    getFile(id_car);
-
-                    converter.json2csv(car_data, json2csvCallback, {
-                        prependHeader: true
-                    });
-                    var fileServer = file.replace("exports", server.protocol + "://" + server.address + ":" + server.PORT);
-                    // getFile(id_car,file);
-                    args.url = fileServer;
-                    return {
-                        id: args.id,
-                        url: args.url
-                    };
-
                 }
             },
             Photos: {

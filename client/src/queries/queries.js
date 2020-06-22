@@ -45,12 +45,10 @@ mutation AddCar($location: String, $login: String!, $photoIn: Upload!)
 }
 `;
 
-//TODO: здесь нужно на вход квери подавать id машины для экспорта - тогда сработает. Пофикси плиз  по моим изменениям
-
-export const getCarsCsvMutation = gql`
-mutation GetCarsCsv($dateFrom: String!, $dateTo: String!)
+export const getCsvReportMutation = gql`
+mutation GetCsvReport($dateFrom: String!, $dateTo: String!)
 {         
-    getCarsCsv(
+    getCsvReport(
         dateFrom: $dateFrom 
         dateTo: $dateTo
     )
@@ -61,10 +59,10 @@ mutation GetCarsCsv($dateFrom: String!, $dateTo: String!)
 }
 `;
 
-export const downloadCarCsvQuery = gql`
-mutation Report($id: Integer)
+export const GetOneCarCsvReport = gql`
+mutation GetOneCarCsv($id: Integer)
 {         
-    getCarsCsv(id: $id)
+    getCsvReport(id: $id)
     {
         id
         url

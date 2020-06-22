@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var Sequelize = require('sequelize');
 var _ = require('lodash');
 
-var db = new Sequelize('vehicle', 'root', 'qwerty', {
+var db = new Sequelize('vehicle', 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql',
 });
@@ -86,22 +86,21 @@ var car = db.define('car', {
 //         location: "123141241",
 //         state: true,
 //         reports_counter:1,
-//         photo:"qweqweq"
-//
+//         photo:"qweqweq",
+//         userCreated: "stellechello",
 //     }
 //     );
 // });
 // user.sync({force: true}).then(function () {
 //     // Table created
 //     return user.create({
-//         id:3,
+//         id:4,
 //         login:"test1",
 //         FIO:"test IV IV",
 //         role: "A",
 //         point: "ST PETERSB",
 //         password:"qwwe",
-//         city:"SPB"
-//
+//         city:"SPB",
 //     });
 // });
 
@@ -137,7 +136,7 @@ var photo = db.define('photo', {
 //
 //     });
 // });
-
-//car.hasMany(photo);
+//
+// car.hasMany(photo);
 
 module.exports = db;

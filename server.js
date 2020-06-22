@@ -8,8 +8,6 @@ const { mutation } = require("./schema/mutation");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-
-
 const schema = new GraphQLSchema({
     query,
     mutation
@@ -39,7 +37,7 @@ app.use(express.static('exports'));
 //app.use(express.static('photos'));
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9000;
 const address="localhost";
 const protocol="http";
 
