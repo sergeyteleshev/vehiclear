@@ -29,16 +29,16 @@ mutation AuthorizeUser($login: String!, $password: String!)
 `;
 
 export const addCarMutation = gql`
-mutation AddCar($location: String, $login: String!, $photoIn: Upload!)
+mutation AddCar($location: String, $photoIn: Upload!, $userCreated: String)
 {
     addCar(
-        location: $location
-        login: $login
+        location: $location       
         photoIn: $photoIn
+        userCreated: $userCreated
     )
     {      
         id
-        login
+        userCreated
         gos_numb
         location      
     }

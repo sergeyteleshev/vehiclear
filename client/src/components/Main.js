@@ -16,20 +16,22 @@ class Main extends Component {
         super(props);
         this.state = {
             isMapShowing: false,
-            latitude: null,
-            longitude: null,
-        }
+            location: null,
+        };
     }
 
-    success = position => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    componentWillMount() {
+        this.geoFindMe();
+    }
 
+    success(e)
+    {
+        const latitude = e.coords.latitude;
+        const longitude = e.coords.longitude;
         if(latitude && longitude)
         {
             this.setState({
-                latitude,
-                longitude,
+                location: `${latitude} ${longitude}`,
             });
         }
         else
@@ -40,33 +42,53 @@ class Main extends Component {
         }
     };
 
-    error = () => {
+    error()
+    {
         this.setState({
             isMapShowing: true,
         })
     };
 
-    geoFindMe = () =>
+    geoFindMe()
     {
-        return navigator.geolocation.getCurrentPosition(this.success, this.error);
+        return navigator.geolocation.getCurrentPosition((e) => this.success(e), (e) =>this.error(e));
     };
 
-    addCar = (event) =>
+    addCar = async (event) =>
     {
-        this.geoFindMe();
+        const {location} = this.state;
+        const photoIn = event.target.files[0];
+        const userStr = getCookie('user');
+        let userCreated = '';
         this.setState({
-            photo: event.target.files[0],
+            photo: photoIn,
         });
 
-        const userStr = getCookie('user');
-        const {latitude, longitude, photo} = this.state;
-        const location = [latitude, longitude];
+        console.log(this.state);
 
-        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0 && latitude
-            && longitude && photo)
+        if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0
+            && photoIn && location)
         {
-            // this.props.addCarMutation(location, photo, JSON.parse(userStr).login);
-            console.log(location, photo, JSON.parse(userStr).login);
+            userCreated = JSON.parse(userStr).login;
+
+            let response = {};
+
+            try
+            {
+                console.log(location, userCreated, photoIn);
+                response = await this.props.addCarMutation({
+                    variables: {
+                        location,
+                        photoIn,
+                        userCreated,
+                    }
+                });
+
+                console.log(response.data);
+            }
+            catch (e) {
+                console.error(e);
+            }
         }
     };
 
@@ -86,7 +108,7 @@ class Main extends Component {
         let inputs = <div className={"content__slider__buttons__gallery"}>
             <img src={gallery} className={"gallery-icon"} alt={"gallery-icon"}/>
             <label htmlFor="files" className="content__slider__buttons__gallery__button">Загрузить из галлереи</label>
-            <input onChange={this.addCar} accept={"image/jpeg, image/png, image/jpg"} id="files" style={{visibility:'hidden'}} type="file"/>
+            <input onChange={(e) => this.addCar(e)} accept={"image/jpeg, image/png, image/jpg"} id="files" style={{visibility:'hidden'}} type="file"/>
         </div>;
 
         if(this.state.isMapShowing)
