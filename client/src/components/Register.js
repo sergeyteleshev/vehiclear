@@ -4,7 +4,6 @@ import {Link} from "react-router-dom";
 import {addUserMutation} from "../queries/queries";
 import { graphql } from 'react-apollo';
 import {getCookie, setCookie} from "./helpers/helpers";
-import Navigator from "./Navigator";
 
 class Register extends Component {
     constructor(props) {
@@ -84,7 +83,7 @@ class Register extends Component {
         return <div className={"register-page"}>
             <div className={"register-logo"}>
                 <span className={"register-logo__span"}>VEHICLEAR!</span>
-                <div className={"logo__svg_black"}></div>
+                <div className={"logo__svg_black"}/>
             </div>
             <div className={"register-form"}>
                 <input value={login} onChange={e => this.setState({login: e.target.value})} type={"text"} placeholder={"Логин"}/>

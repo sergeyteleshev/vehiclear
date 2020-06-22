@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Navigator from "./Navigator";
-import {downloadCarsCsvQuery} from "../queries/queries";
+import {getCarsCsvMutation} from "../queries/queries";
 import {graphql} from 'react-apollo'
 
 const moment = require('moment'); // require
@@ -24,18 +24,42 @@ class ExportCars extends Component {
         });
     }
 
-    downloadCsv = () =>
+    async downloadCsv()
     {
         const {dateFrom, dateTo} = this.state;
-        let link = document.createElement("a");
+        console.log(this.props);
+        console.log(dateFrom, dateTo);
 
-        if(this.props.downloadCarsCsvQuery.Report)
+        let newDateFrom = moment(dateFrom).format("MM/DD/YYYY");
+        let newDateTo = moment(dateTo).format("MM/DD/YYYY");
+
+        let response = {};
+
+        try
         {
-            window.open(this.props.downloadCarsCsvQuery.Report.url, null);
-            link.href = this.props.downloadCarsCsvQuery.Report.url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            response = await this.props.getCarsCsvMutation(newDateFrom, newDateTo)({
+                variables: {
+                    dateFrom: newDateFrom,
+                    dateTo: newDateTo,
+                }
+            });
+
+            console.log(response);
+
+            // let link = document.createElement("a");
+            // console.log(this.props.downloadCarsCsvQuery.Report.url);
+            // window.open(this.props.downloadCarsCsvQuery.Report.url, null);
+            // link.href = this.props.downloadCarsCsvQuery.Report.url;
+            // document.body.appendChild(link);
+            // link.click();
+            // document.body.removeChild(link);
+
+            this.setState({
+
+            });
+        }
+        catch (e) {
+            console.error(e);
         }
     };
 
@@ -54,4 +78,4 @@ class ExportCars extends Component {
     }
 }
 
-export default graphql(downloadCarsCsvQuery, { name: "downloadCarsCsvQuery" })(ExportCars);
+export default graphql(getCarsCsvMutation, { name: "getCarsCsvMutation" })(ExportCars);

@@ -40,7 +40,8 @@ class Login extends Component
                     isResponseMessageShowing: false,
                     responseMessage: "",
                 });
-            }catch (e) {
+            }
+            catch (e) {
                 this.setState({
                     isLogged: false,
                     isResponseMessageShowing: false,
@@ -64,6 +65,7 @@ class Login extends Component
             this.props.history.push(MainURL);
         }
 
+        console.log(this.props);
         const {login, password, isResponseMessageShowing, responseMessage} = this.state;
 
         const responseMessageDiv = isResponseMessageShowing ? <div className={"login-response-message login-message-error"}>{responseMessage}</div>: "";

@@ -7,7 +7,7 @@ export class IntroLoader extends Component {
             <Container>
                 <div className={"logo"}>
                     <span className={"logo__span"}>VEHICLEAR!</span>
-                    <div className={"logo__svg"}></div>
+                    <div className={"logo__svg"}/>
                 </div>
                 <div className={"tips"}>
                     Мы поможем освободить ваше парковочное место
