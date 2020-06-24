@@ -4,15 +4,17 @@ const {GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt} = graphql;
 const {User, Car, PhotoInput, Photo, CarQueryReport} = require("./types");
 const {ValidationError} = require("./ValidationError");
 const md5 = require('md5');
-
 const converter = require('json-2-csv');
 const url = require('url');
 const path = require("path");
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-var dateFormat = require('dateformat');
 const server = require("../server");
 const fs = require('fs');
+const { TypeComposer, schemaComposer } =require( 'graphql-compose');
+const { GraphQLUpload } =require( 'apollo-upload-server');
+
+schemaComposer.set('Upload', GraphQLUpload);
 
 
 var id_car;
@@ -20,6 +22,7 @@ var file;
 var getFile = function (id_csv) {
     file = 'exports/car' + id_csv + '_' + new Date().getTime() + '.csv';
 };
+
 var json2csvCallback = function (err, csv) {
     // id_csv=id_car;
     if (err) throw err;
@@ -47,7 +50,6 @@ var json2csvCallback = function (err, csv) {
 // }
 
 var gosNumbServer = "TU8078";
-
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
@@ -177,9 +179,11 @@ const RootMutation = new GraphQLObjectType({
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
                 photoIn: {type: PhotoInput},
-                userCreated: {type: GraphQLString}
+                userCreated: {type: GraphQLString},
+                photoUpload: '[Upload]'
             },
-            async resolve(root, args) {
+            async resolve(root, args,photoUpload) {
+
 
                 let errors = [];
                 var id;
@@ -236,12 +240,12 @@ const RootMutation = new GraphQLObjectType({
 
                 await db.models.car.create(args);
 
-                var carID= await db.models.car.findOne({
+                var carID = await db.models.car.findOne({
                     //attributes:[id],
                     raw: true,
                     where: {gos_numb: args.gos_numb}
                 });
-                args.photoIn.car_id=carID.id;
+                args.photoIn.car_id = carID.id;
 
                 await db.models.photo.create(args.photoIn);
 
@@ -252,7 +256,7 @@ const RootMutation = new GraphQLObjectType({
                 }
 
                 return {
-                    id:carID.id,
+                    id: carID.id,
                     gos_numb: args.gos_numb
                 }
 
@@ -266,6 +270,7 @@ const RootMutation = new GraphQLObjectType({
                 location: {type: GraphQLString},
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
+
                 //photoIn:{type: new GraphQLList(PhotoInput)}
             },
             async resolve(root, args) {
@@ -389,17 +394,22 @@ const RootMutation = new GraphQLObjectType({
                     var car_data = await db.models.car.findOne({raw: true, where: args});
                 }
                 if (args.dateFrom != null && args.dateTo != null) {
+                    let errors = [];
                     id_car = "";
-                    args.dateFrom = new Date(args.dateFrom);
-                    dateFromNew = dateFormat(args.dateFrom, "dd-mm-yyyy");
-                    args.dateTo = new Date(args.dateTo);
-                    dateToNew = dateFormat(args.dateTo, "dd-mm-yyyy");
-                    // console.log(args.dateTo);
-                    // console.log(args.dateFrom);
-                    var car_data = await db.models.car.findAll({
+                    //args.dateFrom = new Date(args.dateFrom).toLocaleString().split(',')[0];
+                    // dateFromNew = dateFormat(args.dateFrom, "dd-mm-yyyy");
+                    //args.dateTo = new Date(args.dateTo).toLocaleString().split(',')[0];
+                    //dateToNew = dateFormat(args.dateTo, "dd-mm-yyyy");
+                    if (parseInt(args.dateFrom.split("/")[0]) > 12 || parseInt(args.dateTo.split("/")[0]) > 12) {
+                        errors.push({key: 'date', message: 'Enter date in format MM/DD/YYYY'});
+                    }
+                    if (errors.length)
+                        throw new ValidationError(errors);
+
+                     car_data = await db.models.car.findAll({
                         raw: true,
-                        where: {createdAt: {[Op.between]: [dateFromNew, dateToNew]}} //date searched as day/mpnth/year. So in your  query  the first place should be for month
-                    })
+                        where: {createdAt: {[Op.between]: [new Date(args.dateFrom), new Date(args.dateTo)]}}
+                    });
                 }
 
                 getFile(id_car);
@@ -407,7 +417,7 @@ const RootMutation = new GraphQLObjectType({
                 converter.json2csv(car_data, json2csvCallback, {
                     prependHeader: true
                 });
-                var fileServer = file.replace("exports", server.protocol + "://" + server.address + ":" + server.PORT);
+                const fileServer = file.replace("exports", server.protocol + "://" + server.address + ":" + server.PORT);
                 // getFile(id_car,file);
                 args.url = fileServer;
                 return {
@@ -419,6 +429,7 @@ const RootMutation = new GraphQLObjectType({
         },
     }
 });
+
 
 
 exports.mutation = RootMutation;
