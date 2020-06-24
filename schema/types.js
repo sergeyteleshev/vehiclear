@@ -74,11 +74,13 @@ var PhotoInput = new GraphQLInputObjectType({
                 //     return photo.car_id;
                 // }
             }
+            // location:{
+            //     type:GraphQLString
+            // }
         }),
 
     }
 );
-const PhotoUpload=new GraphQLUpload;
 const Photo = new GraphQLObjectType({
         name: 'photo',
         description: 'list of all the cars',

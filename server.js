@@ -7,7 +7,7 @@ const { query } = require("./schema/query");
 const { mutation } = require("./schema/mutation");
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const { apolloUploadExpress } =require( 'apollo-upload-server');
 const schema = new GraphQLSchema({
     query,
     mutation
@@ -17,9 +17,11 @@ var app = express();
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(apolloUploadExpress(/* Options */));
 
 app.use(
     '/main',
+
     expressGraphQl({
         schema: schema,
         graphiql: true,

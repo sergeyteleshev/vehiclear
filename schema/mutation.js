@@ -11,10 +11,10 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const server = require("../server");
 const fs = require('fs');
-const { TypeComposer, schemaComposer } =require( 'graphql-compose');
-const { GraphQLUpload } =require( 'apollo-upload-server');
+const { ObjectTypeComposer, schemaComposer } =require ('graphql-compose');
+const { GraphQLUpload } = require ('apollo-upload-server');
 
-schemaComposer.set('Upload', GraphQLUpload);
+schemaComposer.add(GraphQLUpload);
 
 
 var id_car;
