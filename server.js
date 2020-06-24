@@ -39,10 +39,10 @@ app.use(express.static('exports'));
 const fs = require('fs');
 const stream = require('stream');
 
-//get для специфик файла . В общем, если я тебя правильно поняла, то нужно было это, если нет-хм,объясни
-app.get('/getCsvReport/:file',(req, res) => {
-    var file = req.params.file;//file="zhiga.jpg"; //comment it and enter needed file in method signature
-    const r = fs.createReadStream('./photos/'+file) ;
+app.get('/getCsvReport',(req, res) => {
+    var url = req.param("url");
+    url=url.split("/")[3];
+    const r = fs.createReadStream('./photos/'+url) ;
     const ps = new stream.PassThrough() ;
     stream.pipeline(
         r,
@@ -54,7 +54,6 @@ app.get('/getCsvReport/:file',(req, res) => {
             }
         });
     ps.pipe(res)});
-//console.log(req.headers)});
 
 
 
