@@ -17,7 +17,7 @@ var app = express();
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(apolloUploadExpress(/* Options */));
+app.use(apolloUploadExpress({ uploadDir: "./photos",maxFileSize: 10000000, maxFiles: 10 }));
 
 app.use(
     '/main',
@@ -35,6 +35,28 @@ app.use(
 );
 
 app.use(express.static('exports'));
+
+const fs = require('fs');
+const stream = require('stream');
+
+//get для специфик файла . В общем, если я тебя правильно поняла, то нужно было это, если нет-хм,объясни
+app.get('/getCsvReport/:file',(req, res) => {
+    var file = req.params.file;//file="zhiga.jpg"; //comment it and enter needed file in method signature
+    const r = fs.createReadStream('./photos/'+file) ;
+    const ps = new stream.PassThrough() ;
+    stream.pipeline(
+        r,
+        ps,
+        (err) => {
+            if (err) {
+                console.log(err) ;
+                return res.sendStatus(400);
+            }
+        });
+    ps.pipe(res)});
+//console.log(req.headers)});
+
+
 
 //app.use(express.static('photos'));
 
