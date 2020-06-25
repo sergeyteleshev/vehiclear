@@ -11,10 +11,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const server = require("../server");
 const fs = require('fs');
-const { ObjectTypeComposer, schemaComposer } =require ('graphql-compose');
-const { GraphQLUpload } = require ('apollo-upload-server');
 
-schemaComposer.add(GraphQLUpload);
 
 
 var id_car;
@@ -22,6 +19,23 @@ var file;
 var getFile = function (id_csv) {
     file = 'exports/car' + id_csv + '_' + new Date().getTime() + '.csv';
 };
+function Base64ToFile(data,filename){
+     var arr=data.split(',');
+     var mime=arr[0].match(/:(.*?);/)[1];
+     mime=mime.split('/')[1];
+         //bstr=atob(arr[1]),
+     var buf = new Buffer(arr[1], 'base64'); // decode
+     fs.writeFile("photos/"+filename+"."+mime, buf, function(err) {
+        if(err) {
+            console.log("err", err);
+        } else {
+
+        }
+    });
+     return mime;
+}
+
+//var file1=Base64ToFile('data:image/jpg;base64,aGVsbG8gd29ybGQ=','test.png');
 
 var json2csvCallback = function (err, csv) {
     // id_csv=id_car;
@@ -50,6 +64,7 @@ var json2csvCallback = function (err, csv) {
 // }
 
 var gosNumbServer = "TU8078";
+
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
@@ -179,12 +194,9 @@ const RootMutation = new GraphQLObjectType({
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
                 photoIn: {type: PhotoInput},
-                userCreated: {type: GraphQLString},
-                photoUpload: '[Upload]'
+                userCreated: {type: GraphQLString}
             },
-            async resolve(root, args,photoUpload) {
-
-
+            async resolve(root, args) {
                 let errors = [];
                 var id;
                 if (args.id != null) {
@@ -246,7 +258,10 @@ const RootMutation = new GraphQLObjectType({
                     where: {gos_numb: args.gos_numb}
                 });
                 args.photoIn.car_id = carID.id;
-
+                var filenameIm =carID.id+Date.now()+Math.random();
+                var form=Base64ToFile(args.photoIn.photo,filenameIm);
+                args.photoIn.photo=server.protocol + "://" + server.address + ":" + server.PORT+"/"+filenameIm+"."+form;
+                console.log(args.photoIn.photo);
                 await db.models.photo.create(args.photoIn);
 
                 if (args.location == null) {
@@ -254,6 +269,7 @@ const RootMutation = new GraphQLObjectType({
                     if (errors.length)
                         throw new ValidationError(errors);
                 }
+
 
                 return {
                     id: carID.id,
@@ -270,7 +286,6 @@ const RootMutation = new GraphQLObjectType({
                 location: {type: GraphQLString},
                 state: {type: GraphQLBoolean},
                 reports_counter: {type: GraphQLInt},
-
                 //photoIn:{type: new GraphQLList(PhotoInput)}
             },
             async resolve(root, args) {
@@ -396,10 +411,6 @@ const RootMutation = new GraphQLObjectType({
                 if (args.dateFrom != null && args.dateTo != null) {
                     let errors = [];
                     id_car = "";
-                    //args.dateFrom = new Date(args.dateFrom).toLocaleString().split(',')[0];
-                    // dateFromNew = dateFormat(args.dateFrom, "dd-mm-yyyy");
-                    //args.dateTo = new Date(args.dateTo).toLocaleString().split(',')[0];
-                    //dateToNew = dateFormat(args.dateTo, "dd-mm-yyyy");
                     if (parseInt(args.dateFrom.split("/")[0]) > 12 || parseInt(args.dateTo.split("/")[0]) > 12) {
                         errors.push({key: 'date', message: 'Enter date in format MM/DD/YYYY'});
                     }
@@ -411,7 +422,6 @@ const RootMutation = new GraphQLObjectType({
                         where: {createdAt: {[Op.between]: [new Date(args.dateFrom), new Date(args.dateTo)]}}
                     });
                 }
-
                 getFile(id_car);
 
                 converter.json2csv(car_data, json2csvCallback, {
@@ -429,7 +439,6 @@ const RootMutation = new GraphQLObjectType({
         },
     }
 });
-
 
 
 exports.mutation = RootMutation;

@@ -2,7 +2,6 @@ const graphql = require("graphql");
 const {GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLInputObjectType, GraphQLList} = graphql;
 const db = require("../config");
 const ObjectsToCsv = require('objects-to-csv');
-const {GraphQLUpload} = require("graphql-upload");
 
 var User = new GraphQLObjectType({
         name: 'user',
@@ -73,10 +72,10 @@ var PhotoInput = new GraphQLInputObjectType({
                 // resolve(photo) {
                 //     return photo.car_id;
                 // }
+            },
+            location:{
+                type:GraphQLString
             }
-            // location:{
-            //     type:GraphQLString
-            // }
         }),
 
     }
@@ -177,16 +176,10 @@ const Car = new GraphQLObjectType({
                     return car.userCreated;
                 }
             },
-            // photoIn: {
-            //     type: Photo,
-            //     resolve(car) {
-            //         return db.models.photo.findAll({raw: true, where: {car_id: car.id}});
-            //     }
-            // }
-            photoUpload:{
-                type:PhotoInput,
-                resolve(car){
-                    return car.photoUpload;
+            photoIn: {
+                type: Photo,
+                resolve(car) {
+                    return db.models.photo.findAll({raw: true, where: {car_id: car.id}});
                 }
             }
         })
@@ -251,7 +244,6 @@ Car._typeConfig = {
     sqlTable: 'cars',
     uniqueKey: 'id'
 };
-
 
 exports.User = User;
 exports.Car = Car;

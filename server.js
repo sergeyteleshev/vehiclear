@@ -35,6 +35,7 @@ app.use(
 );
 
 app.use(express.static('exports'));
+app.use(express.static('photos'));
 
 const fs = require('fs');
 const stream = require('stream');
