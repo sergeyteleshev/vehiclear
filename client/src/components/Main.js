@@ -49,6 +49,28 @@ class Main extends Component {
         })
     };
 
+    toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    base64toFile(dataurl, filename)
+    {
+        let arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        return new File([u8arr], filename, {type:mime});
+    }
+
     geoFindMe()
     {
         return navigator.geolocation.getCurrentPosition((e) => this.success(e), (e) =>this.error(e));
@@ -64,7 +86,7 @@ class Main extends Component {
             photo: photoIn,
         });
 
-        console.log(this.state);
+        const photoIn64 = await this.toBase64(photoIn);
 
         if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0
             && photoIn && location)
@@ -79,7 +101,7 @@ class Main extends Component {
                 response = await this.props.addCarMutation({
                     variables: {
                         location,
-                        photoIn,
+                        photoIn: photoIn64,
                         userCreated,
                     }
                 });
@@ -138,6 +160,7 @@ class Main extends Component {
                             {/*</div>*/}
                             {inputs}
                             {authorizeButton}
+                            <img id={"test"} src={""}/>
                         </div>
                     </Container>
                 </div>
