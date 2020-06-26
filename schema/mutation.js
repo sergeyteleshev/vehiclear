@@ -11,8 +11,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const server = require("../server");
 const fs = require('fs');
-
-
+const fetch = require('node-fetch');
 
 var id_car;
 var file;
@@ -60,6 +59,29 @@ let json2csvCallback = function (err, csv) {
 //     if(errors.length)
 //         throw new ValidationError(errors);
 // }
+
+let getNumberFromImgUrl = async (imgUrl) =>
+{
+    try {
+        let url = "http://127.0.0.1:5000/getCarPlate?url="+imgUrl;
+
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+
+        const json = await response.json();
+        if(json.data)
+        {
+            return json.data
+        }
+        else
+        {
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 let gosNumbServer = "TU807282222";
 
@@ -209,71 +231,62 @@ const RootMutation = new GraphQLObjectType({
                 if (args.reports_counter == null) {
                     errors.push({key: 'reports_counter', message: 'The reports_counter must not be empty.'});
                 }
-                if (args.reports_counter == null) {
-                    errors.push({key: 'reports_counter', message: 'The reports_counter must not be empty.'});
-                }
                 if (args.userCreated == null) {
                     errors.push({key: 'userCreated', message: 'The userCreated must not be empty.'});
                 }
                 if (args.photoIn.photo == null || args.photoIn.photo.length === 0) {
                     errors.push({key: 'photo', message: 'Please add photo'})
-                } else {
-                    if (!args.photoIn.photo.includes('/jpeg') && !args.photoIn.photo.includes('/jpg') && !args.photoIn.photo.includes('/png')) {
-                        errors.push({key: 'photo', message: 'Photo should be in .jgg or .jpeg or .png format'})
-                    }
                 }
-                if (errors.length)
-                    throw new ValidationError(errors);
-                if (args.gos_numb == null) {
-                    if (gosNumbServer == null) {
-                        errors.push({key: 'gos_numb', message: 'gos_numb should be filled'});
-                    }
-                    args.gos_numb = gosNumbServer;
+                if (!args.photoIn.photo.includes('/jpeg') && !args.photoIn.photo.includes('/jpg') && !args.photoIn.photo.includes('/png')) {
+                    errors.push({key: 'photo', message: 'Photo should be in .jgg or .jpeg or .png format'})
                 }
-                const foundCar = await db.models.car.findAll({raw: true, where: {gos_numb: args.gos_numb}});
-
-                if (foundCar.length !== 0) {
-                    errors.push({key: 'gos_numb', message: 'A car with this gos_numb already exists.'});
-                    if (errors.length)
-                        throw new ValidationError(errors);
-                }
-
-                // else args.gos_numb=gosNumbServer; //то что приходит со стороннего сервиса
-
-                const foundUser = await db.models.user.findAll({raw: true, where: {login: args.userCreated}});
-                if (foundUser.length == 0) {
-                    errors.push({key: 'userCreated', message: 'Enter existing user login.'});
-                    if (errors.length)
-                        throw new ValidationError(errors);
-                }
-
-                await db.models.car.create(args);
-
-                var carID = await db.models.car.findOne({
-                    //attributes:[id],
-                    raw: true,
-                    where: {gos_numb: args.gos_numb}
-                });
-                args.photoIn.car_id = carID.id;
-                var filenameIm =carID.id+Date.now()+Math.random();
-                var form=Base64ToFile(args.photoIn.photo,filenameIm);
-                args.photoIn.photo=server.protocol + "://" + server.address + ":" + server.PORT+"/"+filenameIm+"."+form;
-                console.log(args.photoIn.photo);
-                await db.models.photo.create(args.photoIn);
-
                 if (args.location == null) {
                     errors.push({key: 'location', message: 'Enter location.'});
                     if (errors.length)
                         throw new ValidationError(errors);
                 }
-
-
-                return {
-                    id: carID.id,
-                    gos_numb: args.gos_numb
+                const foundUser = await db.models.user.findAll({raw: true, where: {login: args.userCreated}});
+                if (foundUser.length === 0) {
+                    errors.push({key: 'userCreated', message: 'Enter existing user login.'});
+                    if (errors.length)
+                        throw new ValidationError(errors);
                 }
 
+                if (errors.length)
+                    throw new ValidationError(errors);
 
+                if (!args.gos_numb)
+                {
+                    var filenameIm =args.userCreated+Date.now()+Math.random();
+                    var form=Base64ToFile(args.photoIn.photo,filenameIm);
+                    args.photoIn.photo=server.protocol + "://" + server.address + ":" + server.PORT+"/"+filenameIm+"."+form;
+                    console.log(args.photoIn.photo);
+
+                    await db.models.photo.create(args.photoIn);
+                    args.gos_numb = "";
+                    let numberPlate = await getNumberFromImgUrl(args.photoIn.photo);
+                    if(numberPlate !== null)
+                    {
+                        args.gos_numb = numberPlate;
+                        await db.models.car.create(args);
+
+                        return {
+                            gos_numb: args.gos_numb
+                        }
+                    }
+                    else
+                    {
+                        errors.push({key: 'plate', message: 'No car plate on photo.'});
+                        if (errors.length)
+                            throw new ValidationError(errors);
+                    }
+                }
+                else
+                {
+                    return {
+                        gos_numb: args.gos_numb
+                    }
+                }
             }
         },
         updateCar: {

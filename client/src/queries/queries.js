@@ -37,8 +37,7 @@ mutation AddCar($location: String, $photoIn: String!, $userCreated: String, $rep
         photoIn:{photo: $photoIn} 
         reports_counter: $reports_counter         
     )
-    {      
-        id
+    {             
         gos_numb
     }
 }
