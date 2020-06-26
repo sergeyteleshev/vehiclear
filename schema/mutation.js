@@ -35,9 +35,7 @@ function Base64ToFile(data,filename){
      return mime;
 }
 
-//var file1=Base64ToFile('data:image/jpg;base64,aGVsbG8gd29ybGQ=','test.png');
-
-var json2csvCallback = function (err, csv) {
+let json2csvCallback = function (err, csv) {
     // id_csv=id_car;
     if (err) throw err;
 
@@ -63,8 +61,7 @@ var json2csvCallback = function (err, csv) {
 //         throw new ValidationError(errors);
 // }
 
-var gosNumbServer = "TU8078";
-
+let gosNumbServer = "TU807282222";
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
@@ -221,7 +218,7 @@ const RootMutation = new GraphQLObjectType({
                 if (args.photoIn.photo == null || args.photoIn.photo.length === 0) {
                     errors.push({key: 'photo', message: 'Please add photo'})
                 } else {
-                    if (!args.photoIn.photo.includes('.jpeg') && !args.photoIn.photo.includes('.jgg') && !args.photoIn.photo.includes('.png')) {
+                    if (!args.photoIn.photo.includes('/jpeg') && !args.photoIn.photo.includes('/jpg') && !args.photoIn.photo.includes('/png')) {
                         errors.push({key: 'photo', message: 'Photo should be in .jgg or .jpeg or .png format'})
                     }
                 }

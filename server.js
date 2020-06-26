@@ -15,8 +15,8 @@ const schema = new GraphQLSchema({
 var app = express();
 
 app.use(cors());
-app.use(express.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({limit: '20mb', extended: true}));
+app.use(bodyParser.json({limit: '20mb', extended: true}));
 app.use(apolloUploadExpress({ uploadDir: "./photos",maxFileSize: 10000000, maxFiles: 10 }));
 
 app.use(

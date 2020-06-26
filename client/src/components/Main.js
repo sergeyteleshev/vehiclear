@@ -79,30 +79,32 @@ class Main extends Component {
     addCar = async (event) =>
     {
         const {location} = this.state;
-        const photoIn = event.target.files[0];
         const userStr = getCookie('user');
         let userCreated = '';
+
+        const photoIn64 = await this.toBase64(event.target.files[0]);
+
         this.setState({
-            photo: photoIn,
+            photo: photoIn64,
         });
 
-        const photoIn64 = await this.toBase64(photoIn);
-
         if(userStr && JSON.parse(userStr) && JSON.parse(userStr).login.length > 0
-            && photoIn && location)
+            && photoIn64 && location)
         {
             userCreated = JSON.parse(userStr).login;
+            console.log(photoIn64);
 
             let response = {};
 
             try
             {
-                console.log(location, userCreated, photoIn);
+                console.log(location, userCreated, photoIn64);
                 response = await this.props.addCarMutation({
                     variables: {
                         location,
                         photoIn: photoIn64,
                         userCreated,
+                        reports_counter: 1,
                     }
                 });
 
